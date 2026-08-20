@@ -23,9 +23,13 @@ export default defineConfig({
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     // Bewust de gebouwde app, niet de dev-server: je test wat er ook echt live gaat.
-    command: `pnpm build && pnpm preview --port ${PORT}`,
+    // De poort staat in het preview-script; hier niet nog eens meegeven, want dan
+    // krijgt Vite de vlag dubbel en bindt hij op een andere poort.
+    command: "pnpm build && pnpm preview",
     url: `http://127.0.0.1:${PORT}`,
     reuseExistingServer: !process.env.CI,
+    stdout: "pipe",
+    stderr: "pipe",
     timeout: 180_000,
   },
 });
