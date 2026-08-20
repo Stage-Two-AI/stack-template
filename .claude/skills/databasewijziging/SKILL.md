@@ -42,6 +42,8 @@ create table public.voorbeeld (
 
 alter table public.voorbeeld enable row level security;
 
+grant select, insert, update, delete on public.voorbeeld to authenticated;
+
 create policy "voorbeeld_select_own"
   on public.voorbeeld for select to authenticated
   using (auth.uid() = owner_id);
@@ -53,6 +55,12 @@ Let op het verschil:
 - **Policy zonder RLS aan** betekent dat iedereen er bij kan.
 
 Je hebt ze allebei nodig. De check `guard:rls` blokkeert de PR als er één ontbreekt.
+
+En let op de **grant**, want dat is een derde slot dat mensen vergeten. Postgres
+vraagt twee dingen: mag deze rol de tabel überhaupt benaderen (`grant`), en welke
+rijen mag hij dan zien (`policy`). Vergeet je de grant, dan krijgt de app
+`permission denied for table` terwijl je policies kloppen. Dat is niet onveilig,
+maar wel stuk, en de RLS-test laat het meteen zien.
 
 ## Stap 3: Draai hem lokaal
 

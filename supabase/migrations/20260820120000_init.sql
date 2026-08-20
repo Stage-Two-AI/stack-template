@@ -15,6 +15,14 @@ create index items_owner_id_created_at_idx on public.items (owner_id, created_at
 -- is dus geen extra stap, het is de enige stap.
 alter table public.items enable row level security;
 
+-- Postgres kent twee sloten op een tabel en je moet ze allebei openzetten:
+--   1. GRANT bepaalt óf een rol de tabel überhaupt mag benaderen;
+--   2. RLS-policies bepalen wélke rijen die rol dan ziet.
+-- Vergeet je de grant, dan krijgt de app "permission denied for table" terwijl de
+-- policies perfect zijn. Vergeet je de policies, dan ziet de rol niets (of alles,
+-- als RLS uit staat). De grant is dus ruim, de policy maakt hem smal.
+grant select, insert, update, delete on public.items to authenticated;
+
 create policy "items_select_own"
   on public.items
   for select
