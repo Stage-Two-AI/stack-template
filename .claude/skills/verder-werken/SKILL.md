@@ -106,7 +106,6 @@ meld dan wat er nog mist.
 | `guard:secrets` | er staat mogelijk een sleutel in de code of in de bundel. **Altijd zelf naar kijken**, dit is de gevaarlijkste |
 | `guard:rls` | er is een tabel zonder beveiliging |
 | `guard:migrations` | je migratie kan data vernietigen; lees de melding en bevestig bewust |
-| `guard:owner-review` | deze PR raakt de database, het inloggen of de poort zelf; vraag de code owner om goedkeuring, dan wordt hij groen |
 | `db:types:check` | de gegenereerde types lopen achter. `pnpm db:types` en committen |
 
 Een rode check omzeilen door hem uit te zetten is nooit het antwoord. De check is

@@ -1,14 +1,17 @@
-# Wie moet er meekijken voordat er gemerged kan worden.
+# Wie er een melding krijgt bij een wijziging op deze paden.
 #
-# Het uitgangspunt is dat de klant zijn eigen pull request mag mergen zodra de
-# checks groen zijn: de merge-knop is de enige knop die nodig is. Voor de paden
-# hieronder geldt een uitzondering, omdat een fout daar geld of gegevens kost en
-# een geautomatiseerde controle dat niet altijd ziet.
+# LET OP: dit blokkeert niets. Er is bewust géén goedkeuring van Stage Two nodig om
+# te mogen mergen, ook niet hier. Reden: als de klant voor elke wijziging op onze
+# goedkeuring moet wachten, kan hij niet zonder ons verder, en dat is precies wat
+# deze werkwijze belooft. Een verplichte review is niet overdraagbaar.
 #
-# LET OP bij het opzetten van een nieuw project: vervang @StageTwoAI door het
-# GitHub-account dat als reviewer moet optreden, en zorg dat dat account
-# schrijfrechten heeft op deze repo. Verwijst CODEOWNERS naar iemand zonder
-# toegang, dan kan niemand meer mergen.
+# Wat er dan wel voor zorgt dat het goed gaat:
+#   - de checks in .github/workflows/ci.yml, die de merge blokkeren als er iets stuk is
+#   - de bevestigingsregels in de PR-tekst voor een destructieve migratie
+#   - de hooks in .claude/, die een agent tegenhouden op de gevoelige paden
+#   - de stack-sync, die deze bestanden elk uur weer gelijk zet met de template
+#
+# Bij het opzetten van een project vult bin/nieuw-project.sh hier het juiste account in.
 
 # Alles wat de database onomkeerbaar kan wijzigen.
 /supabase/migrations/       @StageTwoAI
