@@ -159,7 +159,10 @@ de tests over gaan.
 
 Op een paar paden staat een uitzondering (zie `.github/CODEOWNERS`): migraties,
 inloggen en de kwaliteitspoort zelf krijgen wél een menselijke blik, omdat een fout
-daar geld of gegevens kost en een test dat niet altijd ziet.
+daar geld of gegevens kost en een test dat niet altijd ziet. Die eis wordt afgedwongen
+door de check `guard:owner-review`, die zelf opvraagt of er een goedkeuring ligt. Dat
+is bewust niet overgelaten aan de CODEOWNERS-instelling van GitHub: die werkt anders
+per plan en per instelling, en dit is te belangrijk om van een vinkje af te hangen.
 
 Alle accounts (GitHub, Vercel, Supabase, Sentry) staan op naam van de klant, met
 Stage Two als lid met adminrechten. Bij oplevering hoeft er dus niets overgedragen te

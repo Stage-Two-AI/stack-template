@@ -29,6 +29,7 @@
       "scripts/guard-rls.mjs",
       "scripts/guard-secrets.mjs",
       "scripts/guard-escape-hatches.mjs",
+      "scripts/guard-owner-review.mjs",
       "scripts/check-types-in-sync.mjs",
       "scripts/write-db-types.mjs",
       "scripts/write-local-env.mjs",
