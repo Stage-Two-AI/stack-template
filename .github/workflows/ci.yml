@@ -2,6 +2,11 @@ name: Kwaliteitspoort
 
 on:
   pull_request:
+    # `edited` staat er bewust bij. Twee guards lezen een bevestigingsregel uit de
+    # PR-tekst ("Geen tests nodig: ..." en "Bevestigd: destructieve migratie").
+    # Zonder `edited` zou je die regel kunnen toevoegen zonder dat er iets opnieuw
+    # draait, en bleef de check rood tot je een lege commit pushte.
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
 
