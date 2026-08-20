@@ -1,7 +1,14 @@
 # <projectnaam>
 
-<!-- Vervang <projectnaam> en de regel hieronder bij het opzetten van een project. -->
+<!-- Vervang <projectnaam> en de regel hieronder bij het opzetten van een project.
+     Alles boven de markering hoort bij dít project en wordt door de stack-sync
+     nooit overschreven. -->
+
 <!-- Wat deze app doet, in één zin, vanuit de gebruiker geschreven. -->
+
+<!-- stack:begin -->
+<!-- Alles hieronder komt uit stack-template en wordt bijgewerkt via een
+     stack-sync pull request. Wijzig het niet hier; meld het bij Stage Two. -->
 
 ## Klaar is
 
@@ -29,6 +36,19 @@ Achtergrond en het waarom: `docs/WERKWIJZE.md`.
 | `pnpm test:rls` | beveiligingstests (database moet draaien) |
 | `pnpm test:e2e` | end-to-end test in een echte browser |
 
+## Waar wat staat
+
+```
+src/components/ui/     losse bouwblokken (shadcn/ui, staan in deze repo, mag je aanpassen)
+src/features/          schermen en functionaliteit, per onderwerp
+src/lib/               database, omgeving, validatie, hulpjes
+supabase/migrations/   elke databasewijziging, in volgorde
+supabase/functions/    Edge Functions (Deno) voor alles met een geheime sleutel
+tests/rls/             beveiligingstests
+e2e/                   end-to-end tests
+scripts/               de guards uit de kwaliteitspoort
+```
+
 ## Regels
 
 - **Previews gaan via de Vercel-preview van de PR.** Zet geen dev-server op localhost
@@ -45,12 +65,14 @@ Achtergrond en het waarom: `docs/WERKWIJZE.md`.
   zijn niet uitwisselbaar tussen die twee, en die map valt buiten `tsconfig.json`.
 - **Databasewijzigingen altijd als migratie** in `supabase/migrations/`, nooit
   handmatig in de Supabase-console. Draai daarna `pnpm db:types` en commit het resultaat.
-- **Elke nieuwe tabel krijgt RLS aan, policies én een test** in `tests/rls/` die
-  controleert dat gebruiker A niet bij de gegevens van B komt.
+- **Elke nieuwe tabel krijgt RLS aan, een `grant` én policies**, plus een test in
+  `tests/rls/` die controleert dat gebruiker A niet bij de gegevens van B komt.
 - **Wie code wijzigt, wijzigt ook een test.** Bugfix? Eerst een test die de bug
   reproduceert, dan de reparatie.
 - **Eén PR = één onderwerp.** Beschrijf wat je gewijzigd hebt en waarom.
 - **Pushen naar `main` kan niet en hoeft niet:** deployen gebeurt door te mergen.
+- **Migraties zijn aanvullend.** Voeg een kolom toe in de ene PR en gebruik hem in de
+  volgende; gooi een kolom pas weg als niets hem meer aanroept.
 
 ## Werkwijzen
 
@@ -62,7 +84,9 @@ Voor de vaste routes zijn er skills, gebruik die in plaats van te improviseren:
 
 ## Wat je niet aanpast
 
-`.github/workflows/`, `.claude/` en `scripts/guard-*` komen uit de gedeelde template
-en worden bijgewerkt via een stack-sync pull request. Een hook blokkeert wijzigingen
-daaraan. Klopt er iets niet, meld het dan bij Stage Two: dan krijgt elk project de
-verbetering, in plaats van dit project alleen.
+`.github/workflows/`, `.claude/`, `scripts/` en `docs/WERKWIJZE.md` komen uit de
+gedeelde template en worden bijgewerkt via een stack-sync pull request. Een hook
+blokkeert wijzigingen daaraan. Klopt er iets niet, meld het dan bij Stage Two: dan
+krijgt elk project de verbetering, in plaats van dit project alleen.
+
+<!-- stack:end -->

@@ -1,0 +1,61 @@
+{
+  "$beschrijving": [
+    "Welke bestanden van de gedeelde template zijn en welke van dit project.",
+    "De stack-sync gebruikt dit om alleen de template-bestanden bij te werken,",
+    "zonder ooit aan het werk van de klant te komen.",
+    "",
+    "Dit werkt alleen omdat de hooks in .claude/settings.json wijzigingen aan deze",
+    "paden blokkeren: wat niemand lokaal aanpast, kun je veilig in zijn geheel",
+    "vervangen. De afdwinging en de sync houden elkaar dus overeind."
+  ],
+  "stackVersion": 1,
+  "vanDeTemplate": {
+    "vervangen": [
+      ".claude/hooks/guard.mjs",
+      ".claude/settings.json",
+      ".claude/stack-manifest.json",
+      ".claude/stack-version",
+      ".claude/skills/verder-werken/SKILL.md",
+      ".claude/skills/databasewijziging/SKILL.md",
+      ".claude/skills/nieuwe-app-aanvragen/SKILL.md",
+      ".github/workflows/ci.yml",
+      ".github/workflows/deploy-db.yml",
+      ".github/pull_request_template.md",
+      ".github/dependabot.yml",
+      "scripts/lib/changed-files.mjs",
+      "scripts/lib/db-types.mjs",
+      "scripts/guard-tests.mjs",
+      "scripts/guard-migrations.mjs",
+      "scripts/guard-rls.mjs",
+      "scripts/guard-secrets.mjs",
+      "scripts/guard-escape-hatches.mjs",
+      "scripts/check-types-in-sync.mjs",
+      "scripts/write-db-types.mjs",
+      "scripts/write-local-env.mjs",
+      "docs/WERKWIJZE.md",
+      "biome.json"
+    ],
+    "sleutelsSamenvoegen": {
+      "package.json": ["scripts"]
+    },
+    "tussenMarkeringen": {
+      "CLAUDE.md": "stack"
+    }
+  },
+  "vanHetProject": [
+    "src/**",
+    "supabase/migrations/**",
+    "supabase/functions/**",
+    "tests/**",
+    "e2e/**",
+    "README.md",
+    ".env.example",
+    ".github/CODEOWNERS",
+    "index.html",
+    "tsconfig.json",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.rls.config.ts",
+    "playwright.config.ts"
+  ]
+}

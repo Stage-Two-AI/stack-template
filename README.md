@@ -1,101 +1,96 @@
 # <projectnaam>
 
-<!-- Vervang <projectnaam> en beschrijf in één zin wat deze app doet. -->
+<!-- Vervang <projectnaam> en schrijf hieronder in één zin wat deze app doet,
+     in gewone taal, vanuit de gebruiker. -->
 
-## Werk je met Claude? Begin hier
+## Wat je hier vindt
 
-Start je Claude-sessie **in deze map**. Doet je dat niet, dan worden `CLAUDE.md` en de
-afspraken in `.claude/` niet geladen en improviseert de agent er zelf iets bij.
+Dit is de werkplaats van deze applicatie. Alles wat de app doet staat hier, en elke
+wijziging die ooit gemaakt is, is hier terug te vinden.
 
-```bash
+Je hoeft geen programmeur te zijn om hier te werken. Je beschrijft in gewone taal wat
+je wilt, Claude maakt de wijziging, en een reeks automatische controles kijkt mee
+voordat er iets live gaat. Die controles zijn je vangnet: ze zijn er zodat je kunt
+experimenteren zonder iets kapot te kunnen maken.
+
+## Beginnen
+
+Open Claude **in deze map**. Dat is belangrijk: alleen dan leest hij de afspraken die
+bij dit project horen. Doe je het ergens anders, dan verzint hij zijn eigen werkwijze.
+
+```
 cd <deze map>
 claude
 ```
 
-Vraag daarna gewoon wat je wilt. Voor de vaste routes zijn er skills die vanzelf
-gebruikt worden: `verder-werken`, `databasewijziging` en `nieuwe-app-aanvragen`.
+Vraag daarna gewoon wat je wilt, bijvoorbeeld "kun je een filter op datum toevoegen aan
+het overzicht". Claude kent de vaste route en loopt hem vanzelf af.
 
-## In vijf minuten lokaal draaien
+## Hoe een wijziging live komt
 
-Nodig: [Node 22 of hoger](https://nodejs.org), [pnpm](https://pnpm.io) en
-[Docker](https://docs.docker.com/get-started/get-docker/) (die laatste alleen voor de
-database).
+Altijd via dezelfde vijf stappen. Ook voor een komma, en ook als Stage Two het doet.
 
-```bash
-pnpm install          # pakketten ophalen
-pnpm db:start         # lokale Supabase starten, eerste keer duurt een paar minuten
-pnpm env:local        # .env.local en .env.test schrijven
-pnpm dev              # app draaien op http://localhost:5173
-```
+1. **Een aftakking maken.** Je werkt aan een kopie, niet aan de live versie. Er kan dus
+   niets misgaan terwijl je bezig bent.
+2. **De wijziging maken**, met een test erbij die vastlegt wat er nu anders is.
+3. **Een voorstel openen** (een "pull request"). Dat is de plek waar je ziet wat er
+   precies verandert.
+4. **De controles laten draaien.** Ze moeten allemaal groen zijn. Rood betekent: er is
+   iets mis, en het gaat niet live.
+5. **Op de knop Merge drukken.** Dat is het moment dat het live gaat. Er is verder geen
+   knop en geen handeling nodig.
 
-Inloggen kan met een gebruiker die je zelf aanmaakt in Supabase Studio, dat na
-`pnpm db:start` bereikbaar is op http://127.0.0.1:54323.
+Bij stap 3 krijg je een **preview-link**: een echte, werkende versie van de app met
+jouw wijziging erin, die je kunt openen en aan een collega kunt sturen. Gebruik altijd
+die link om iets te laten zien, nooit een adres dat met `localhost` begint. Dat laatste
+werkt alleen op de computer waar het draait.
 
-> Werk je aan iets wat je wilt **laten zien**, gebruik dan niet `pnpm dev` maar de
-> Vercel-preview van je pull request. Dat is de enige link die een ander kan openen,
-> en de enige die bewijst dat de gebouwde versie werkt.
+## De controles, in gewone taal
 
-## Hoe werk hier binnenkomt
+Ze draaien vanzelf zodra je een voorstel opent. Duurt bij elkaar een paar minuten.
 
-```
-branch maken  →  bouwen + test schrijven  →  PR openen  →  checks groen  →  mergen
-```
-
-Mergen is deployen. Er wordt nooit met de hand naar een server of console gedeployed,
-en er kan niet rechtstreeks naar `main` gepusht worden, ook niet door de bouwer.
-
-De volledige werkwijze en het waarom staat in [`docs/WERKWIJZE.md`](docs/WERKWIJZE.md).
-
-## De kwaliteitspoort
-
-Draait op elke pull request. Alles moet groen voordat er gemerged kan worden.
-
-| Check | Wat hij bewaakt |
+| Wat er gecontroleerd wordt | Waarom |
 |---|---|
-| Typecontrole | de code klopt met zichzelf en met het databaseschema |
-| Lint en opmaak | leesbare diffs, geen stijlruzies |
-| Unittests | het gedrag dat we hebben vastgelegd |
-| Build | het bouwt echt |
-| Geheimen | geen sleutel in de repo, en niet in de gedownloade bundel |
-| Verstopte typefouten | geen `any` of `@ts-ignore` om een fout weg te drukken |
-| Row level security | elke tabel heeft beveiliging én policies |
-| Tests bij wijzigingen | wie code wijzigt, wijzigt ook een test |
-| Destructieve migraties | dataverlies kan alleen met expliciete bevestiging |
-| Types in sync | de gegenereerde databasetypes lopen niet achter |
-| RLS-tests | gebruiker A komt echt niet bij de gegevens van B |
-| End-to-end | de belangrijkste route door de app werkt in een echte browser |
+| Klopt de code met zichzelf | de meeste fouten vallen hier al door de mand |
+| Is de opmaak netjes | zodat je kunt zien wat er echt verandert |
+| Doen de bestaande functies het nog | voorkomt dat een nieuwe wens iets ouds sloopt |
+| Bouwt de app echt | een app die niet bouwt, gaat ook niet live |
+| Staat er geen wachtwoord of sleutel in | dit is de gevaarlijkste fout die er bestaat |
+| Zijn er geen fouten weggemoffeld | een groene controle mag niet gekocht zijn |
+| Is elke tabel afgeschermd | anders kan iemand bij gegevens van een ander |
+| Zit er een test bij je wijziging | anders kijkt er niemand meer mee |
+| Gaan er geen gegevens verloren | verwijderen kan alleen als je het bewust bevestigt |
+| Klopt de app nog met de database | voorkomt fouten die pas live zichtbaar zouden zijn |
+| Werkt de belangrijkste route nog | inloggen, iets toevoegen, het terugzien |
 
-## Omgevingsvariabelen
+**Staat er iets rood?** Vraag Claude wat er misgaat en om het op te lossen. Zet een
+controle nooit uit om verder te kunnen. Ze staan er juist voor de momenten dat je haast
+hebt.
 
-Zie [`.env.example`](.env.example): daar staat per variabele waar je de waarde vandaan
-haalt. `.env.local` staat niet in git en hoort daar ook nooit in te komen.
+## Als je iets nodig hebt
 
-## GitHub Actions-secrets
+- **Een wijziging aan deze app**: gewoon vragen, Claude kent de route.
+- **Een compleet nieuwe app**: vraag Claude om de aanvraag met je uit te werken, dan
+  komt hij bij Stage Two terecht. Een nieuwe app krijgt een eigen werkplaats, dus die
+  kun je niet vanuit deze map beginnen.
+- **Iets aan de instellingen, toegang of een rekening**: dat regelt Stage Two.
 
-Het enige dat niet als bestand meereist. Voor een nieuw project instellen onder
-Settings → Secrets and variables → Actions:
+## Voor wie het naadje van de kous wil
 
-| Secret | Waarvoor |
-|---|---|
-| `SUPABASE_ACCESS_TOKEN` | migraties toepassen bij een merge naar `main` |
-| `SUPABASE_DB_PASSWORD` | idem, als het project daarom vraagt |
-| `SUPABASE_PROJECT_REF` | welk Supabase-project het betreft |
-| `SENTRY_AUTH_TOKEN` | alleen als je releases automatisch wilt melden |
+- De volledige werkwijze en het waarom van elke keuze: [`docs/WERKWIJZE.md`](docs/WERKWIJZE.md)
+- De afspraken zoals Claude ze leest: [`CLAUDE.md`](CLAUDE.md)
 
-De tests hebben géén secrets nodig: de CI start een eigen lokale database.
+## Zelf op je computer draaien (optioneel)
 
-## Waar wat staat
+Alleen nodig als je zonder internet wilt kunnen werken of iets wilt uitproberen zonder
+er een voorstel van te maken. Je hebt [Node](https://nodejs.org),
+[pnpm](https://pnpm.io) en [Docker](https://docs.docker.com/get-started/get-docker/)
+nodig. Lukt het niet in tien minuten, vraag het dan aan Stage Two in plaats van door te
+worstelen.
 
 ```
-src/                     de app
-  components/ui/         losse bouwblokken (shadcn/ui, van jou, mag je aanpassen)
-  features/              schermen en functionaliteit, per onderwerp
-  lib/                   database, omgeving, validatie, hulpjes
-supabase/
-  migrations/            elke databasewijziging, in volgorde
-  functions/             Edge Functions (Deno) voor alles met een geheime sleutel
-tests/rls/               beveiligingstests
-e2e/                     end-to-end tests
-scripts/                 de guards uit de kwaliteitspoort
-docs/WERKWIJZE.md        de werkwijze en het waarom
+pnpm install     # eenmalig, haalt alles op wat de app nodig heeft
+pnpm db:start    # start een database op je eigen computer
+pnpm env:local   # zet de instellingen goed
+pnpm dev         # de app draait nu op http://localhost:5173
 ```

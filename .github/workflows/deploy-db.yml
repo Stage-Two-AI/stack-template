@@ -1,0 +1,76 @@
+name: Database bijwerken
+
+# Migraties draaien ALLEEN bij een merge naar main, nooit op een pull request.
+# Een pull request mag de database van niemand aanraken.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  # Nooit twee migratieruns tegelijk op dezelfde database.
+  group: database-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    name: Migraties toepassen
+    runs-on: ubuntu-latest
+    steps:
+      - name: Zijn de secrets al gezet?
+        id: check
+        env:
+          ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          if [ -z "$ACCESS_TOKEN" ] || [ -z "$PROJECT_REF" ]; then
+            echo "::notice::SUPABASE_ACCESS_TOKEN of SUPABASE_PROJECT_REF ontbreekt. Migraties worden overgeslagen."
+            echo "Dit is normaal in een project dat nog opgezet wordt; zie BOOTSTRAP.md stap 5."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/checkout@v5
+
+      - if: steps.check.outputs.skip != 'true'
+        uses: pnpm/action-setup@v4
+
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - if: steps.check.outputs.skip != 'true'
+        run: pnpm install --frozen-lockfile
+
+      # De Supabase CLI zit als devDependency in package.json, dus hier draait exact
+      # dezelfde versie als op de machine van de bouwer. Dat voorkomt verrassingen.
+      - name: Koppelen aan het Supabase-project
+        if: steps.check.outputs.skip != 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: pnpm exec supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}"
+
+      - name: Tonen wat er zou draaien
+        if: steps.check.outputs.skip != 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: pnpm exec supabase migration list --linked
+
+      - name: Migraties toepassen
+        if: steps.check.outputs.skip != 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: pnpm exec supabase db push --include-all
+
+# Let op de volgorde in de tijd: Vercel begint aan zijn eigen deploy zodra er naar
+# main gemerged wordt, dus heel even kan nieuwe code op het oude schema draaien.
+# Daarom is de regel: migraties zijn aanvullend. Voeg een kolom toe in de ene PR en
+# ga hem pas gebruiken in de volgende, en gooi een kolom pas weg als niets hem meer
+# aanroept. Dan is die paar seconden nooit een probleem.
