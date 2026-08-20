@@ -1,0 +1,210 @@
+# Werkwijze
+
+*Hoort bij de Stage Two-stack, versie 2. Dit bestand komt uit de gedeelde template en
+wordt bijgewerkt via een stack-sync pull request; wijzig het niet per project.*
+
+Dit legt uit hóé er in dit project gewerkt wordt en vooral **waarom**. De korte,
+gebiedende versie voor dagelijks gebruik staat in `CLAUDE.md`; dit is de achtergrond
+voor wie een keuze wil begrijpen of ter discussie wil stellen.
+
+De uitgangspunten waar alles uit volgt:
+
+- De bouwer is geen programmeur en kan code niet regel voor regel beoordelen. Elke
+  keuze moet fouten daarom **mechanisch** afvangen in plaats van te vertrouwen op het
+  oog van de bouwer.
+- Het werk moet **overdraagbaar** zijn aan een ingehuurde programmeur. Geen
+  zelfbedachte workflows, alleen bewezen industriepraktijk.
+- Je moet **zonder Stage Two verder kunnen**.
+
+---
+
+## 1. Waarom deze onderdelen
+
+| Laag | Keuze | Waarom |
+|---|---|---|
+| Taal | TypeScript, `strict` | vangt het gros van de fouten vóór het live gaat |
+| Bouwgereedschap | Vite | snel, en het houdt de app in de browser waar hij thuishoort |
+| Interface | React + shadcn/ui + Tailwind | bouwblokken in je eigen repo, geen afhankelijkheid van iemands versiebeleid |
+| Database, inloggen, opslag | Supabase | neemt het moeilijkste werk weg, en het is gewoon Postgres, dus overdraagbaar |
+| Validatie | Zod | controleert gegevens van buiten vóór gebruik |
+| Tests | Vitest + Playwright | het vangnet |
+| Fouten in productie | Sentry | anders hoor je het van je klant |
+| Hosting | Vercel | een preview per pull request, productie op `main` |
+
+Waarom een browser-app en geen app met een eigen server: het typische project is een
+intern werktuig achter een login. Geen Google nodig, maar wél de printer, de camera
+voor barcodes, een PDF uit wat op het scherm staat, Excel in- en uitlezen. Dat kan
+alleen in de browser; een server kan er niet bij.
+
+---
+
+## 2. Beveiliging, en waarom dat hier zwaarder weegt
+
+**Zonder server is de database je beveiliging.** Er is geen tussenlaag die controleert
+of iemand mag wat hij opvraagt. Dat doet Postgres via row level security (RLS). Staan
+die regels fout, dan kan een ingelogde gebruiker met een beetje kennis álle gegevens
+opvragen, terwijl de app er van buiten volstrekt normaal uitziet.
+
+Daarom:
+
+> Elke tabel krijgt RLS aan én policies, en RLS-policies worden getest net als code:
+> log in als gebruiker A, vraag gegevens van B op, verwacht leeg.
+
+**Alles in een browser-app is leesbaar voor de gebruiker.** Elke `VITE_`-variabele zit
+in het bestand dat de bezoeker downloadt.
+
+- Wél in de app: de Supabase **anon key**. Die is expres publiek en wordt door RLS
+  beschermd.
+- **Nooit** in de app: de **service role key**, API-sleutels van derden, wachtwoorden.
+  Die horen in een Edge Function of als server-side variabele in Vercel.
+- `.env` staat nooit in git. `.env.example` wel, met lege waarden en per variabele een
+  regel uitleg.
+
+Twee checks bewaken dit automatisch: één die de repo doorzoekt, en één die de
+gebouwde bundel doorzoekt. Die tweede is de belangrijkste van allemaal.
+
+---
+
+## 3. Databasewijzigingen lopen via GitHub
+
+Het doel: je kunt het databaseschema wijzigen **zonder toegang tot de
+Supabase-console**. Dat werkt via migraties plus een deploy-stap.
+
+1. De wijziging wordt een SQL-bestand in `supabase/migrations/`.
+2. Pull request openen. De CI draait: types opnieuw genereren, typecontrole, tests,
+   RLS-check, destructie-check.
+3. Mergen naar `main`.
+4. Actions past de migratie toe op de database.
+5. Vercel zet de nieuwe versie neer.
+
+Regels die hierbij horen en niet vrijblijvend zijn:
+
+- **Migraties draaien alleen bij een merge naar `main`**, nooit op een pull request.
+- **Back-ups staan aan** voordat deze route in gebruik wordt genomen. Dit is het enige
+  onderdeel dat gegevens onherstelbaar kan vernietigen.
+- **Nooit handmatig in de Supabase-console wijzigen.** Dan loopt de repo uit de pas
+  met de werkelijkheid en is de historie waardeloos.
+- **De gegenereerde types worden gecommit** en in de CI gecontroleerd, zodat code
+  nooit stilletjes uit de pas loopt met de database.
+
+---
+
+## 4. De kwaliteitspoort
+
+Draait op elke pull request; alles groen voordat er gemerged kan worden. Wat elke
+check bewaakt staat in de tabel in `README.md`.
+
+Twee dingen om te begrijpen over waaróm dit zo streng staat:
+
+**De tests zijn de reviewer.** Er is bewust geen verplichte goedkeuring van een mens
+op gewone wijzigingen, zodat je je eigen werk kunt mergen zodra het groen is. De
+keerzijde is dat wat de tests niet dekken, door niemand gedekt wordt. Daarom is
+"schrijf de test erbij" hier geen nette gewoonte maar de kern van de afspraak.
+
+**Een rode check zet je niet uit.** De verleiding is groot, zeker als je haast hebt en
+de check "iets onbelangrijks" lijkt te vinden. Maar de check is er juist voor het
+moment dat je haast hebt.
+
+### Wat "de happy path" is
+
+De route door de app waarop niets misgaat: inloggen → lijst openen → item toevoegen →
+het staat er. Niet de randgevallen. Breekt die route, dan is de app waardeloos, dus
+dat is de test die het meest telt. Hij raakt in één keer de hele keten: build,
+inloggen, database, RLS en de interface.
+
+Uitbreiden doe je **reactief**: elke keer dat er in productie iets stukgaat, komt er
+een test bij die precies dat geval afdekt. Zo groeit het vangnet mee met je echte
+fouten in plaats van met bedachte scenario's.
+
+---
+
+## 5. Git- en werkafspraken
+
+1. **`main` is heilig.** Alles via een pull request, ook voor de bouwer.
+2. **Eén PR = één onderwerp.** Grote PR's zijn niet te beoordelen en een agent
+   verdwaalt erin.
+3. **Lees altijd de diff voordat je merget.** Zonder de taal te kennen let je op:
+   - zijn dit de bestanden die ik verwachtte?
+   - hoeveel regels? ("kleine fix" met 300 regels is een rode vlag)
+   - is er iets **verwijderd** waar niemand om gevraagd heeft?
+   - staan er nieuwe pakketten in `package.json`?
+   - raakt het aan inloggen, betalingen, omgevingsvariabelen of migraties?
+   - staat er een sleutel of wachtwoord hardgecodeerd in?
+4. **Klik de Vercel-preview aan.** Kijken gaat boven hopen. Een preview-URL van de PR
+   is de enige geldige manier om werk te laten zien, nooit een dev-server op localhost.
+5. **Deployen = mergen.** Nooit met de hand op een server of in een console ingrijpen.
+6. **Conventional Commits** (`feat:`, `fix:`, `chore:`).
+7. **Bug gefixt? Schrijf er een test bij.** Zo groeit het vangnet mee.
+8. **Scope per taak, niet per uur.** Een agent die twee uur ongestoord doorbouwt,
+   levert een diff op die niet meer te beoordelen is. Dan is het vertrouwen in plaats
+   van controle.
+
+---
+
+## 6. Wie mag wat
+
+|  | Stage Two (bouwer) | Klant (mede-bouwer) |
+|---|---|---|
+| GitHub-repo | Admin | **Write** |
+| Direct pushen naar `main` | nee, geblokkeerd | **nee** |
+| Branch aanmaken en PR openen | ja | **ja** |
+| Eigen PR mergen | ja | **ja**, zodra alle checks groen zijn |
+| Supabase-console | ja | niet nodig, zie hoofdstuk 3 |
+| Vercel-console | ja | niet nodig, deployen is mergen |
+| Sentry | ja | ja, meelezen |
+
+**De merge-knop is de enige knop die je nodig hebt.** Je kunt met je eigen Claude
+bouwen, een pull request openen en die zelf mergen, maar alleen langs de route waar
+de tests over gaan.
+
+Op een paar paden staat een uitzondering (zie `.github/CODEOWNERS`): migraties,
+inloggen en de kwaliteitspoort zelf krijgen wél een menselijke blik, omdat een fout
+daar geld of gegevens kost en een test dat niet altijd ziet.
+
+Alle accounts (GitHub, Vercel, Supabase, Sentry) staan op naam van de klant, met
+Stage Two als lid met adminrechten. Bij oplevering hoeft er dus niets overgedragen te
+worden: de toegang van Stage Two wordt verwijderd en de rest blijft staan.
+
+---
+
+## 7. Hoe de afspraken worden afgedwongen
+
+Een afspraak die een agent moet ónthouden, breekt uiteindelijk. Een afspraak die de
+tooling afdwingt, niet. Vandaar drie lagen, oplopend in sterkte:
+
+1. **`CLAUDE.md`** geeft richting. Wordt automatisch geladen aan het begin van een
+   sessie in deze map, met bovenaan de "klaar is"-definitie, want daar stuurt een
+   model het sterkst op.
+2. **`.claude/` in de repo** dwingt af. Hooks onderscheppen een tool-aanroep vóór hij
+   wordt uitgevoerd en kunnen hem blokkeren met uitleg terug aan de agent. Omdat het
+   in de repo staat, geldt het automatisch ook voor jouw sessies, zonder dat je iets
+   hoeft te installeren.
+3. **CI en branch protection** is de bodem. Ook als een agent élke afspraak negeert,
+   komt er niets in `main` zonder groene checks.
+
+De eerste twee lagen bepalen hoe vaak je tegen die bodem aan loopt. De derde bepaalt
+wat er gebeurt als het toch misgaat.
+
+---
+
+## 8. Woordenlijst
+
+De namen zitten op verschillende verdiepingen; het zijn geen concurrenten van elkaar.
+
+| Term | Wat het is |
+|---|---|
+| **TypeScript** | de taal: JavaScript met labels erbij ("dit veld is een datum") zodat fouten opvallen vóór het live gaat |
+| **React** | het systeem van herbruikbare bouwblokken waarmee je de interface samenstelt. Geen taal |
+| **Vite** | het bouwgereedschap: maakt van je bronbestanden iets dat een browser kan laden |
+| **Vercel** | het platform waar het eindresultaat gehost wordt |
+| **Supabase** | database (Postgres) + inloggen + bestandsopslag als dienst |
+| **RLS** | regels in de database die per gebruiker bepalen welke rijen hij mag zien. In een browser-app is dit je hele beveiliging |
+| **Edge Function** | klein stukje code dat bij Supabase op een server draait, voor dingen met een geheime sleutel |
+| **Deno** | de omgeving waarin Edge Functions draaien. Geldt voor iedereen die Supabase gebruikt, niet projectspecifiek |
+| **Migratie** | een genummerd SQL-bestand dat één databasewijziging vastlegt, zodat de historie navolgbaar is |
+| **PR (pull request)** | het voorstel om wijzigingen naar `main` te brengen. De plek waar diff, checks en preview samenkomen |
+| **Diff** | het verschil tussen oud en nieuw: precies wat er gewijzigd is |
+| **CI** | de machine die bij elke PR je checks draait en nee kan zeggen |
+| **Ruleset / branch protection** | de GitHub-instelling die bepaalt wie wat mag met `main` |
+| **Hook** | een regel die een tool-aanroep van de agent onderschept en kan blokkeren. Afdwingen in plaats van vragen |
+| **Happy path** | de route door de app waarop niets misgaat: de normale, geslaagde gang van zaken |

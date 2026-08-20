@@ -1,0 +1,22 @@
+# Wie moet er meekijken voordat er gemerged kan worden.
+#
+# Het uitgangspunt is dat de klant zijn eigen pull request mag mergen zodra de
+# checks groen zijn: de merge-knop is de enige knop die nodig is. Voor de paden
+# hieronder geldt een uitzondering, omdat een fout daar geld of gegevens kost en
+# een geautomatiseerde controle dat niet altijd ziet.
+#
+# LET OP bij het opzetten van een nieuw project: vervang @StageTwoAI door het
+# GitHub-account dat als reviewer moet optreden, en zorg dat dat account
+# schrijfrechten heeft op deze repo. Verwijst CODEOWNERS naar iemand zonder
+# toegang, dan kan niemand meer mergen.
+
+# Alles wat de database onomkeerbaar kan wijzigen.
+/supabase/migrations/       @StageTwoAI
+
+# De kwaliteitspoort zelf.
+/.github/                   @StageTwoAI
+/scripts/                   @StageTwoAI
+/.claude/                   @StageTwoAI
+
+# Inloggen, rechten en betalingen.
+/src/features/auth/         @StageTwoAI
