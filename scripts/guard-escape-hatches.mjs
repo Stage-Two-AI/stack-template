@@ -41,7 +41,7 @@ for (const file of walk(ROOT)) {
   const lines = readFileSync(file, "utf8").split("\n");
   for (const [index, line] of lines.entries()) {
     for (const pattern of PATTERNS) {
-      if (pattern.re.test(line)) problems.push(`${file}:${index + 1} — ${pattern.name}`);
+      if (pattern.re.test(line)) problems.push(`${file}:${index + 1}: ${pattern.name}`);
     }
   }
 }

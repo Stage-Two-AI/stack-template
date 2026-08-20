@@ -62,6 +62,8 @@ const PROTECTED_PATHS = [
   { prefix: ".claude/", what: "de afspraken voor de agent" },
   { prefix: "scripts/guard-", what: "een guard-script" },
   { prefix: "scripts/check-", what: "een controlescript" },
+  { prefix: "scripts/lib/", what: "gedeelde code van de guards" },
+  { prefix: "scripts/write-db-types", what: "de typegeneratie" },
 ];
 
 function deny(reason) {

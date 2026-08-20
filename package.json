@@ -28,7 +28,7 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript --local > src/lib/database.types.ts",
+    "db:types": "node scripts/write-db-types.mjs",
     "db:types:check": "node scripts/check-types-in-sync.mjs",
     "env:local": "node scripts/write-local-env.mjs"
   },

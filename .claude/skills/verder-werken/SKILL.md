@@ -9,7 +9,7 @@ Dit is de enige route waarlangs werk in deze app terechtkomt. Hij geldt voor ied
 ook voor een kleine tekstwijziging, want de route is precies wat het veilig maakt om
 zonder programmeerkennis te bouwen.
 
-## Stap 1 — Weet wat je gaat maken
+## Stap 1: Weet wat je gaat maken
 
 Vraag door tot je één zin kunt opschrijven die begint met "na deze wijziging kan de
 gebruiker …". Lukt dat niet, dan is het verzoek nog niet scherp genoeg en is dit het
@@ -18,7 +18,7 @@ moment om het te vragen, niet halverwege.
 Is het verzoek groter dan één zin? Knip het op. **Eén pull request = één onderwerp.**
 Grote PR's zijn niet te beoordelen en er verdwijnt van alles ongemerkt in.
 
-## Stap 2 — Begin op een eigen branch
+## Stap 2: Begin op een eigen branch
 
 ```bash
 git checkout main
@@ -28,7 +28,7 @@ git checkout -b <korte-omschrijving>
 
 Nooit rechtstreeks op `main` werken. Dat kan ook niet: de repo weigert het.
 
-## Stap 3 — Bouw de wijziging
+## Stap 3: Bouw de wijziging
 
 Houd je aan de afspraken uit `CLAUDE.md`. De belangrijkste, omdat ze het vaakst
 misgaan:
@@ -41,7 +41,7 @@ misgaan:
 - Nieuwe tabel? Dan RLS aan én policies én een RLS-test. Zie de skill
   `databasewijziging`.
 
-## Stap 4 — Schrijf de test erbij
+## Stap 4: Schrijf de test erbij
 
 Niet achteraf, en niet "later". Bij deze werkwijze zijn de tests de enige verplichte
 beoordelaar van je werk, dus wat de tests niet dekken, dekt niemand.
@@ -53,7 +53,7 @@ beoordelaar van je werk, dus wat de tests niet dekken, dekt niemand.
 
 De CI blokkeert een PR die productiecode wijzigt zonder één enkele test aan te raken.
 
-## Stap 5 — Draai de poort lokaal
+## Stap 5: Draai de poort lokaal
 
 ```bash
 pnpm check
@@ -70,7 +70,7 @@ pnpm test:rls
 pnpm test:e2e
 ```
 
-## Stap 6 — Open de pull request
+## Stap 6: Open de pull request
 
 ```bash
 git push -u origin <branch>
@@ -84,7 +84,7 @@ plak de link erin en **klik hem zelf één keer aan** voordat je iemand vraagt t
 Zet nooit een dev-server op localhost op om iets te tonen. Die kan de klant niet
 openen en hij bewijst niet dat de gebouwde versie werkt.
 
-## Stap 7 — Klaar is klaar
+## Stap 7: Klaar is klaar
 
 Een taak is klaar als, en alleen als:
 

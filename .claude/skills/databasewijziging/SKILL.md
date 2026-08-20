@@ -15,7 +15,7 @@ Niet in het dashboard klikken, niet even een kolom toevoegen "om het te proberen
 Dan loopt de repo uit de pas met de werkelijkheid en is de historie waardeloos.
 Alles gaat als migratiebestand.
 
-## Stap 1 — Schrijf de migratie
+## Stap 1: Schrijf de migratie
 
 Nieuw bestand in `supabase/migrations/`, met een tijdstempel voorop zodat de volgorde
 vastligt:
@@ -28,7 +28,7 @@ Eén migratie beschrijft één wijziging. Ze worden in volgorde uitgevoerd en no
 achteraf aangepast: een fout herstel je met een nieuwe migratie, niet door de oude
 te wijzigen (die is bij anderen al gedraaid).
 
-## Stap 2 — Elke nieuwe tabel krijgt RLS én policies
+## Stap 2: Elke nieuwe tabel krijgt RLS én policies
 
 Dit is geen extra stap, dit is de beveiliging. In een browser-app is er geen server
 die controleert of iemand mag wat hij opvraagt: dat doet Postgres.
@@ -54,7 +54,7 @@ Let op het verschil:
 
 Je hebt ze allebei nodig. De check `guard:rls` blokkeert de PR als er één ontbreekt.
 
-## Stap 3 — Draai hem lokaal
+## Stap 3: Draai hem lokaal
 
 ```bash
 pnpm db:start     # eerste keer duurt even
@@ -64,7 +64,7 @@ pnpm db:reset     # gooit de lokale database weg en draait alle migraties opnieu
 `db:reset` is de echte test: hij bewijst dat je migraties vanaf niets werken, in
 volgorde, zonder handmatige stappen.
 
-## Stap 4 — Genereer de types en commit ze
+## Stap 4: Genereer de types en commit ze
 
 ```bash
 pnpm env:local
@@ -78,7 +78,7 @@ pas lopen met de database.
 Verzin nooit zelf een type voor een tabel. Als TypeScript klaagt dat een kolom niet
 bestaat, is het antwoord `pnpm db:types`, niet een `any`.
 
-## Stap 5 — Schrijf de RLS-test
+## Stap 5: Schrijf de RLS-test
 
 Voor elke nieuwe tabel, in `tests/rls/`. Het patroon staat in `tests/rls/items.test.ts`:
 log in als gebruiker A, probeer bij de gegevens van B te komen, verwacht leeg.
@@ -90,7 +90,7 @@ pnpm test:rls
 Er is geen andere test die een fout in je policies vangt. De app ziet er van buiten
 volstrekt normaal uit terwijl alle gegevens opvraagbaar zijn.
 
-## Stap 6 — Gaat er iets weg? Stop even
+## Stap 6: Gaat er iets weg? Stop even
 
 Verwijdert je migratie een tabel, een kolom of gegevens, dan blokkeert
 `guard:migrations` de PR. Dat is de bedoeling. Loop dit na voordat je bevestigt:

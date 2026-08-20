@@ -56,9 +56,9 @@ Achtergrond en het waarom: `docs/WERKWIJZE.md`.
 
 Voor de vaste routes zijn er skills, gebruik die in plaats van te improviseren:
 
-- `verder-werken` — iets toevoegen, wijzigen of repareren aan deze app
-- `databasewijziging` — een tabel, kolom of policy erbij of anders
-- `nieuwe-app-aanvragen` — een compleet nieuwe applicatie
+- `verder-werken`: iets toevoegen, wijzigen of repareren aan deze app
+- `databasewijziging`: een tabel, kolom of policy erbij of anders
+- `nieuwe-app-aanvragen`: een compleet nieuwe applicatie
 
 ## Wat je niet aanpast
 

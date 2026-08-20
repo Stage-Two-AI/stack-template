@@ -58,13 +58,13 @@ function scan(file, content, origin) {
       const role = jwtRole(token);
       // In de bundel is alleen de anon key acceptabel; in git hoort geen enkel token.
       if (!isBundle || role !== "anon") {
-        problems.push(`${origin} ${file}:${index + 1} — JSON Web Token met rol "${role}"`);
+        problems.push(`${origin} ${file}:${index + 1}: JSON Web Token met rol "${role}"`);
       }
     }
 
     for (const pattern of PATTERNS) {
       if (pattern.re.test(line)) {
-        problems.push(`${origin} ${file}:${index + 1} — ${pattern.name}`);
+        problems.push(`${origin} ${file}:${index + 1}: ${pattern.name}`);
       }
     }
   }
@@ -76,7 +76,7 @@ const tracked = execFileSync("git", ["ls-files"], { encoding: "utf8" }).split("\
 for (const file of tracked) {
   const base = file.split("/").at(-1) ?? file;
   if (ENV_FILE.test(base) && base !== ".env.example") {
-    problems.push(`[git] ${file} — een .env-bestand hoort nooit in git`);
+    problems.push(`[git] ${file}: een .env-bestand hoort nooit in git`);
     continue;
   }
   if (SKIP_FILES.has(file) || SKIP_EXT.test(file)) continue;
@@ -108,7 +108,7 @@ if (existsSync("dist")) {
     }
     scan(file, content, "[bundel]");
     if (/service_role/.test(content)) {
-      problems.push(`[bundel] ${file} — de tekst "service_role" staat in de bundel`);
+      problems.push(`[bundel] ${file}: de tekst "service_role" staat in de bundel`);
     }
   }
 } else {
