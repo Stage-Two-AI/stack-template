@@ -59,6 +59,10 @@ const BASH_RULES = [
 
 const PROTECTED_PATHS = [
   { prefix: ".github/workflows/", what: "de kwaliteitspoort" },
+  // Wie zichzelf als code owner kan toevoegen, kan de review-eis op migraties en
+  // inloggen wegnemen. Het opzetscript vult dit bestand in vóórdat er iemand aan
+  // de repo werkt; daarna hoort het niet meer te wijzigen.
+  { prefix: ".github/CODEOWNERS", what: "de lijst van wie moet meekijken" },
   { prefix: ".claude/", what: "de afspraken voor de agent" },
   { prefix: "scripts/guard-", what: "een guard-script" },
   { prefix: "scripts/check-", what: "een controlescript" },
