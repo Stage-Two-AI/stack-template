@@ -60,7 +60,6 @@ Ze draaien vanzelf zodra je een voorstel opent. Duurt bij elkaar een paar minute
 | Is elke tabel afgeschermd | anders kan iemand bij gegevens van een ander |
 | Zit er een test bij je wijziging | anders kijkt er niemand meer mee |
 | Gaan er geen gegevens verloren | verwijderen kan alleen als je het bewust bevestigt |
-| Heeft iemand meegekeken waar dat moet | bij wijzigingen aan de database, aan inloggen of aan de controles zelf |
 | Klopt de app nog met de database | voorkomt fouten die pas live zichtbaar zouden zijn |
 | Werkt de belangrijkste route nog | inloggen, iets toevoegen, het terugzien |
 

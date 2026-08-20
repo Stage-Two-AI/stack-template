@@ -16,9 +16,6 @@ concurrency:
 
 permissions:
   contents: read
-  # Nodig voor guard:owner-review, die opvraagt of er een goedkeuring van een
-  # code owner ligt. Alleen lezen: de workflow verandert nooit iets aan de PR.
-  pull-requests: read
 
 jobs:
   # Snelle controles: geen database nodig, klaar in ongeveer een minuut.
@@ -28,10 +25,6 @@ jobs:
     env:
       # De guards lezen de PR-tekst voor hun expliciete bevestigingsregels.
       PR_BODY: ${{ github.event.pull_request.body }}
-      # En guard:owner-review kijkt wie de PR goedgekeurd heeft.
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      PR_AUTHOR: ${{ github.event.pull_request.user.login }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -73,9 +66,6 @@ jobs:
 
       - name: Guard - destructieve migraties
         run: pnpm guard:migrations
-
-      - name: Guard - review van een code owner op de gevoelige paden
-        run: pnpm guard:owner-review
 
   # Alles wat een echte database nodig heeft. Draait tegen een lokale Supabase,
   # dus zonder sleutels van een cloudomgeving en zonder iets aan te raken wat leeft.

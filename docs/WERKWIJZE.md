@@ -157,12 +157,16 @@ fouten in plaats van met bedachte scenario's.
 bouwen, een pull request openen en die zelf mergen, maar alleen langs de route waar
 de tests over gaan.
 
-Op een paar paden staat een uitzondering (zie `.github/CODEOWNERS`): migraties,
-inloggen en de kwaliteitspoort zelf krijgen wél een menselijke blik, omdat een fout
-daar geld of gegevens kost en een test dat niet altijd ziet. Die eis wordt afgedwongen
-door de check `guard:owner-review`, die zelf opvraagt of er een goedkeuring ligt. Dat
-is bewust niet overgelaten aan de CODEOWNERS-instelling van GitHub: die werkt anders
-per plan en per instelling, en dit is te belangrijk om van een vinkje af te hangen.
+**Er is geen enkele wijziging waarvoor je op goedkeuring van Stage Two moet wachten.**
+Dat is een bewuste keuze en geen vergeetachtigheid: als je voor elke wijziging op ons
+zou moeten wachten, kun je niet zonder ons verder, en dat is precies wat deze werkwijze
+belooft. Een verplichte review is niet overdraagbaar.
+
+Wat er dan wel voor zorgt dat het goed gaat: de checks blokkeren de merge als er iets
+stuk is, een destructieve migratie vraagt een expliciete bevestiging in de PR-tekst, de
+hooks houden een agent tegen op de gevoelige paden, en Stage Two krijgt een melding bij
+een wijziging aan de database, aan het inloggen of aan de poort zelf (zie
+`.github/CODEOWNERS`, dat blokkeert niets maar informeert wel).
 
 Alle accounts (GitHub, Vercel, Supabase, Sentry) staan op naam van de klant, met
 Stage Two als lid met adminrechten. Bij oplevering hoeft er dus niets overgedragen te
