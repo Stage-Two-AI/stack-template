@@ -48,17 +48,11 @@ antwoord heeft; "dat zien we later wel" is het duurste antwoord in dit lijstje.
 
 ## De aanvraag indienen
 
-Vat het samen in bovenstaande zeven kopjes en open er een issue mee in de
-intake-repo van Stage Two:
+Vat het samen in bovenstaande zeven kopjes, schrijf het naar een bestand, en mail dat
+naar **info@stagetwo.nl** met als onderwerp "Nieuwe app: <korte naam>".
 
-```bash
-gh issue create --repo Stage-Two-AI/intake \
-  --title "Nieuwe app: <korte naam>" \
-  --body-file <bestand>
-```
-
-Lukt dat niet, of weet je niet zeker of je toegang hebt, stuur de samenvatting dan
-naar je contactpersoon bij Stage Two.
+Zet in de mail ook wie de contactpersoon is en wanneer je het nodig hebt. Stage Two
+neemt daarna contact op om de aanvraag door te nemen.
 
 ## Wat er daarna gebeurt
 
