@@ -52,7 +52,7 @@ Vat het samen in bovenstaande zeven kopjes en open er een issue mee in de
 intake-repo van Stage Two:
 
 ```bash
-gh issue create --repo StageTwoAI/intake \
+gh issue create --repo Stage-Two-AI/intake \
   --title "Nieuwe app: <korte naam>" \
   --body-file <bestand>
 ```
