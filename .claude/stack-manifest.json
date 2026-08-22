@@ -8,7 +8,7 @@
     "paden blokkeren: wat niemand lokaal aanpast, kun je veilig in zijn geheel",
     "vervangen. De afdwinging en de sync houden elkaar dus overeind."
   ],
-  "stackVersion": 3,
+  "stackVersion": 4,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",
