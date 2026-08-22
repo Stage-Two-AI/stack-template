@@ -33,7 +33,15 @@ function jwtRole(match) {
 
 const PATTERNS = [
   { name: "Supabase secret key", re: /\bsb_secret_[A-Za-z0-9_-]{10,}/ },
-  { name: "privésleutel", re: /-{5}BEGIN (?:[A-Z]+ )?PRIVATE KEY-{5}/ },
+  {
+    name: "privésleutel",
+    re: /-{5}BEGIN (?:[A-Z]+ )?PRIVATE KEY-{5}/,
+    // In de bundel is de kale header niet genoeg: cryptobibliotheken (zoals de
+    // sleutel-parser in @vercel/blob) bevatten die tekst in hun eigen code. Een
+    // gelekte sleutel herken je aan wat erna komt: de base64-inhoud, eventueel
+    // met letterlijke "\n"-tekens omdat de bundel geminificeerd is.
+    reBundel: /-{5}BEGIN (?:[A-Z]+ )?PRIVATE KEY-{5}(?:\\r?\\?n|\s)*[A-Za-z0-9+/]{40}/,
+  },
   { name: "AWS access key", re: /\bAKIA[0-9A-Z]{16}\b/ },
   { name: "Stripe live key", re: /\b[rs]k_live_[A-Za-z0-9]{10,}/ },
   { name: "GitHub token", re: /\b(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,})/ },
@@ -63,7 +71,8 @@ function scan(file, content, origin) {
     }
 
     for (const pattern of PATTERNS) {
-      if (pattern.re.test(line)) {
+      const re = isBundle && pattern.reBundel ? pattern.reBundel : pattern.re;
+      if (re.test(line)) {
         problems.push(`${origin} ${file}:${index + 1}: ${pattern.name}`);
       }
     }
