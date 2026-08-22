@@ -67,6 +67,50 @@ gebouwde bundel doorzoekt. Die tweede is de belangrijkste van allemaal.
 
 ## 3. Databasewijzigingen lopen via GitHub
 
+### Eerst: heeft deze app wel een database nodig?
+
+Standaard is **nee**. In `stack.config.json` staat `database`, en in een nieuw project zet
+het opzetscript die op `false`. De app draait dan alleen op Vercel en dit hele hoofdstuk is
+niet van toepassing.
+
+(In `stack-template` zelf staat hij bewust op `true`: die repo moet zijn eigen databaselaag
+blijven testen, anders verrot het onderdeel dat jij straks aanzet.)
+
+Dat is geen zuinigheid om de zuinigheid. Vercel rekent een vaste platformprijs ongeacht
+het aantal projecten, maar Supabase rekent per project: het plan per organisatie plus
+compute per project. Twintig apps met elk een eigen database is dus een veelvoud van
+twintig apps op Vercel. Een database die je niet nodig hebt, is de duurste regel code
+die je nooit hebt geschreven.
+
+**Zet `database` op `true` zodra één van deze waar is:**
+
+- er zijn **gebruikersaccounts**, of gegevens die per gebruiker afgeschermd moeten worden
+- gegevens hebben **relaties** die je wilt kunnen bevragen: bestellingen bij klanten,
+  taken bij projecten
+- **meerdere mensen** wijzigen dezelfde gegevens en mogen elkaar niet overschrijven
+- je wilt **zoeken, filteren of sorteren** over meer dan een handvol records
+- er is een **transactie**: twee dingen die samen moeten slagen of samen moeten falen,
+  zoals een betaling en een voorraadmutatie
+
+**Blijf op `false` als het hierbij blijft:**
+
+- inhoud die in de repo kan staan: teksten, een portfolio, een productenlijst die jij beheert
+- **bestanden** zonder onderlinge relaties: foto's, audio, uploads. Die horen in Vercel Blob,
+  ook als het er veel zijn
+- een beetje **staat** die af en toe wordt bijgewerkt: een wachtrij, een cache, een teller.
+  Ook Blob
+- **terugkerende taken**: dat is Vercel Cron, geen reden voor een database
+
+Merk je dat je in Blob een database aan het namaken bent, met verwijzingen tussen bestanden
+of met zoeken over inhoud, dan is dat het signaal om om te schakelen. Niet doormodderen.
+
+**Omschakelen is één regel.** Alles wat erbij hoort staat al in de repo: de migratiemap, de
+RLS-guards, de typegeneratie en de deploy-workflow. Zet `database` op `true`, maak het
+Supabase-project aan, zet de drie secrets, en de hele laag hieronder wordt wakker. Andersom
+kan ook, maar bedenk dat gegevens die er al in staan dan niet vanzelf meeverhuizen.
+
+### Als er wel een database is
+
 Het doel: je kunt het databaseschema wijzigen **zonder toegang tot de
 Supabase-console**. Dat werkt via migraties plus een deploy-stap.
 

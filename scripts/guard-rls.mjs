@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { fail, pass } from "./lib/changed-files.mjs";
+import { fail, pass, skip } from "./lib/changed-files.mjs";
+import { heeftDatabase } from "./lib/stack-config.mjs";
 
 /**
  * In een browser-app is de database je beveiliging: er is geen tussenlaag die
@@ -11,6 +12,10 @@ import { fail, pass } from "./lib/changed-files.mjs";
  * Deze guard leest álle migraties (niet alleen de gewijzigde) en eist dat elke
  * tabel in het schema `public` RLS aan heeft staan én minstens één policy heeft.
  */
+if (!heeftDatabase()) {
+  skip("deze app heeft geen database (database: false in stack.config.json)");
+}
+
 const MIGRATIONS_DIR = "supabase/migrations";
 
 function stripComments(sql) {

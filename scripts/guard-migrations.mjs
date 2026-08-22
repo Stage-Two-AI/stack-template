@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { changedFiles, fail, pass, pullRequestBody, skip } from "./lib/changed-files.mjs";
+import { heeftDatabase } from "./lib/stack-config.mjs";
 
 /**
  * De migratiepijplijn is het enige onderdeel van deze stack dat data onherstelbaar
@@ -8,6 +9,10 @@ import { changedFiles, fail, pass, pullRequestBody, skip } from "./lib/changed-f
  *
  * Bevestigen doe je met de regel `Bevestigd: destructieve migratie` in de PR-tekst.
  */
+if (!heeftDatabase()) {
+  skip("deze app heeft geen database (database: false in stack.config.json)");
+}
+
 const DESTRUCTIVE = [
   { name: "drop table", re: /\bdrop\s+table\b/i },
   { name: "drop column", re: /\bdrop\s+column\b/i },
