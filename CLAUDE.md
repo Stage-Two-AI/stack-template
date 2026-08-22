@@ -18,9 +18,14 @@ rood, meld dan wat er nog mist in plaats van "het is af".
 
 ## Stack
 
-Vite + React + TypeScript (strict) · Tailwind + shadcn/ui · Supabase (Postgres, auth,
-storage, RLS) · React Router · Zod · pnpm. Hosting: Vercel. Fouten: Sentry.
-Achtergrond en het waarom: `docs/WERKWIJZE.md`.
+Vite + React + TypeScript (strict) · Tailwind + shadcn/ui · React Router · Zod · pnpm.
+Hosting: Vercel. Fouten: Sentry. Achtergrond en het waarom: `docs/WERKWIJZE.md`.
+
+**De database is een keuze, geen gegeven.** In `stack.config.json` staat of deze app
+Supabase (Postgres, auth, storage, RLS) gebruikt. Staat `database` op `false`, dan draait
+de app alleen op Vercel: geen migraties, geen RLS-tests, geen databasejob in CI, en de
+`pnpm db:*`-commando's hieronder zijn niet van toepassing. Zet hem niet op eigen houtje om;
+`docs/WERKWIJZE.md` beschrijft wanneer een database nodig wordt en wat er dan moet gebeuren.
 
 ## Commando's
 
@@ -67,6 +72,10 @@ scripts/               de guards uit de kwaliteitspoort
   handmatig in de Supabase-console. Draai daarna `pnpm db:types` en commit het resultaat.
 - **Elke nieuwe tabel krijgt RLS aan, een `grant` én policies**, plus een test in
   `tests/rls/` die controleert dat gebruiker A niet bij de gegevens van B komt.
+- **Heeft de app geen database, verzin er dan geen.** Blijvende gegevens gaan naar Vercel
+  Blob, terugkerende taken naar Vercel Cron. Merk je dat je daar een database in aan het
+  namaken bent, dan is dat het signaal om `database` om te zetten, niet om door te
+  modderen.
 - **Wie code wijzigt, wijzigt ook een test.** Bugfix? Eerst een test die de bug
   reproduceert, dan de reparatie.
 - **Eén PR = één onderwerp.** Beschrijf wat je gewijzigd hebt en waarom.

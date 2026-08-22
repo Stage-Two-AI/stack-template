@@ -1,0 +1,16 @@
+{
+  "$beschrijving": [
+    "Keuzes die per app verschillen en waar de kwaliteitspoort naar luistert.",
+    "Dit bestand is van het project: de stack-sync raakt het nooit aan.",
+    "",
+    "database: heeft deze app een eigen Postgres nodig?",
+    "  false  De app draait alleen op Vercel. Geen Supabase-project, geen migraties,",
+    "         geen RLS-tests, geen databasejob in CI. Dit is het startpunt.",
+    "  true   De app heeft echt een database nodig. De hele databaselaag wordt actief:",
+    "         migraties, RLS-guards, typegeneratie en de deploy naar Supabase.",
+    "",
+    "Van false naar true is een wijziging van een regel; alles wat erbij hoort staat",
+    "al klaar in deze repo. Zie docs/WERKWIJZE.md voor wanneer je hem omzet."
+  ],
+  "database": true
+}

@@ -69,6 +69,11 @@ jobs:
 
   # Alles wat een echte database nodig heeft. Draait tegen een lokale Supabase,
   # dus zonder sleutels van een cloudomgeving en zonder iets aan te raken wat leeft.
+  #
+  # Heeft de app geen database (`database: false` in stack.config.json), dan slaan
+  # de Supabase-stappen zichzelf over en blijven alleen de browsertests over. De job
+  # zelf blijft dan wél draaien: hij staat als verplichte check in de ruleset, en een
+  # job die in zijn geheel wordt overgeslagen laat die check hangen.
   database:
     name: Database en end-to-end
     runs-on: ubuntu-latest
@@ -84,16 +89,31 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Doet de databaselaag mee?
+        id: stack
+        run: |
+          aan=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.heeftDatabase()))")
+          echo "database=$aan" >> "$GITHUB_OUTPUT"
+          if [ "$aan" = "true" ]; then
+            echo "::notice::Databaselaag staat aan: migraties, typecontrole en RLS-tests draaien."
+          else
+            echo "::notice::Deze app heeft geen database. Alleen de end-to-end test draait."
+          fi
+
       - name: Supabase starten (draait meteen alle migraties)
+        if: steps.stack.outputs.database == 'true'
         run: pnpm exec supabase start
 
       - name: Omgevingsvariabelen schrijven
+        if: steps.stack.outputs.database == 'true'
         run: pnpm env:local
 
       - name: Databasetypes lopen gelijk met het schema
+        if: steps.stack.outputs.database == 'true'
         run: pnpm db:types:check
 
       - name: RLS-tests
+        if: steps.stack.outputs.database == 'true'
         run: pnpm test:rls
 
       - name: Browser installeren

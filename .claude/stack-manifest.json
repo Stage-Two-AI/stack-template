@@ -8,7 +8,7 @@
     "paden blokkeren: wat niemand lokaal aanpast, kun je veilig in zijn geheel",
     "vervangen. De afdwinging en de sync houden elkaar dus overeind."
   ],
-  "stackVersion": 2,
+  "stackVersion": 3,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",
@@ -23,6 +23,7 @@
       ".github/pull_request_template.md",
       ".github/dependabot.yml",
       "scripts/lib/changed-files.mjs",
+      "scripts/lib/stack-config.mjs",
       "scripts/lib/db-types.mjs",
       "scripts/guard-tests.mjs",
       "scripts/guard-migrations.mjs",
@@ -43,6 +44,7 @@
     }
   },
   "vanHetProject": [
+    "stack.config.json",
     "src/**",
     "supabase/migrations/**",
     "supabase/functions/**",
