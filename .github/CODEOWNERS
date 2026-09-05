@@ -8,7 +8,8 @@
 # Wat er dan wel voor zorgt dat het goed gaat:
 #   - de checks in .github/workflows/ci.yml, die de merge blokkeren als er iets stuk is
 #   - de bevestigingsregels in de PR-tekst voor een destructieve migratie
-#   - de hooks in .claude/, die een agent tegenhouden op de gevoelige paden
+#   - de check guard:template, die een PR op de gevoelige paden rood laat staan
+#   - de hooks in .claude/, die Claude Code daar al bij de toetsaanslag tegenhouden
 #   - de stack-sync, die deze bestanden elk uur weer gelijk zet met de template
 #
 # Bij het opzetten van een project vult bin/nieuw-project.sh hier het juiste account in.

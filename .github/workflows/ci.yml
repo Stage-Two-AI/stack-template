@@ -67,6 +67,9 @@ jobs:
       - name: Guard - destructieve migraties
         run: pnpm guard:migrations
 
+      - name: Guard - bestanden van de gedeelde template
+        run: pnpm guard:template
+
   # Alles wat een echte database nodig heeft. Draait tegen een lokale Supabase,
   # dus zonder sleutels van een cloudomgeving en zonder iets aan te raken wat leeft.
   #

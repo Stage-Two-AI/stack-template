@@ -1,10 +1,10 @@
 # Werkwijze
 
-*Hoort bij de Stage Two-stack, versie 2. Dit bestand komt uit de gedeelde template en
+*Hoort bij de Stage Two-stack, versie 5. Dit bestand komt uit de gedeelde template en
 wordt bijgewerkt via een stack-sync pull request; wijzig het niet per project.*
 
 Dit legt uit hóé er in dit project gewerkt wordt en vooral **waarom**. De korte,
-gebiedende versie voor dagelijks gebruik staat in `CLAUDE.md`; dit is de achtergrond
+gebiedende versie voor dagelijks gebruik staat in `AGENTS.md`; dit is de achtergrond
 voor wie een keuze wil begrijpen of ter discussie wil stellen.
 
 De uitgangspunten waar alles uit volgt:
@@ -15,6 +15,8 @@ De uitgangspunten waar alles uit volgt:
 - Het werk moet **overdraagbaar** zijn aan een ingehuurde programmeur. Geen
   zelfbedachte workflows, alleen bewezen industriepraktijk.
 - Je moet **zonder Stage Two verder kunnen**.
+- De afspraken hangen niet aan één AI-assistent. Met Claude Code, Codex of een andere
+  agent, of zonder agent, gelden dezelfde regels en dezelfde poort.
 
 ---
 
@@ -197,9 +199,9 @@ fouten in plaats van met bedachte scenario's.
 | Vercel-console | ja | niet nodig, deployen is mergen |
 | Sentry | ja | ja, meelezen |
 
-**De merge-knop is de enige knop die je nodig hebt.** Je kunt met je eigen Claude
-bouwen, een pull request openen en die zelf mergen, maar alleen langs de route waar
-de tests over gaan.
+**De merge-knop is de enige knop die je nodig hebt.** Je kunt met je eigen
+AI-assistent bouwen, een pull request openen en die zelf mergen, maar alleen langs de
+route waar de tests over gaan.
 
 **Er is geen enkele wijziging waarvoor je op goedkeuring van Stage Two moet wachten.**
 Dat is een bewuste keuze en geen vergeetachtigheid: als je voor elke wijziging op ons
@@ -207,8 +209,8 @@ zou moeten wachten, kun je niet zonder ons verder, en dat is precies wat deze we
 belooft. Een verplichte review is niet overdraagbaar.
 
 Wat er dan wel voor zorgt dat het goed gaat: de checks blokkeren de merge als er iets
-stuk is, een destructieve migratie vraagt een expliciete bevestiging in de PR-tekst, de
-hooks houden een agent tegen op de gevoelige paden, en Stage Two krijgt een melding bij
+stuk is, een destructieve migratie vraagt een expliciete bevestiging in de PR-tekst, een
+wijziging aan de poort zelf ook, en Stage Two krijgt een melding bij
 een wijziging aan de database, aan het inloggen of aan de poort zelf (zie
 `.github/CODEOWNERS`, dat blokkeert niets maar informeert wel).
 
@@ -223,13 +225,19 @@ worden: de toegang van Stage Two wordt verwijderd en de rest blijft staan.
 Een afspraak die een agent moet ónthouden, breekt uiteindelijk. Een afspraak die de
 tooling afdwingt, niet. Vandaar drie lagen, oplopend in sterkte:
 
-1. **`CLAUDE.md`** geeft richting. Wordt automatisch geladen aan het begin van een
-   sessie in deze map, met bovenaan de "klaar is"-definitie, want daar stuurt een
-   model het sterkst op.
-2. **`.claude/` in de repo** dwingt af. Hooks onderscheppen een tool-aanroep vóór hij
-   wordt uitgevoerd en kunnen hem blokkeren met uitleg terug aan de agent. Omdat het
-   in de repo staat, geldt het automatisch ook voor jouw sessies, zonder dat je iets
-   hoeft te installeren.
+1. **`AGENTS.md`** geeft richting. Dat is het bestand dat vrijwel elke AI-assistent
+   automatisch leest aan het begin van een sessie in deze map (Claude Code via
+   `CLAUDE.md`, dat niets anders doet dan `AGENTS.md` importeren). Bovenaan staat de
+   "klaar is"-definitie, want daar stuurt een model het sterkst op. De vaste routes
+   staan uitgeschreven in `docs/routes/`, als gewone tekst, zodat ook een assistent
+   zonder skills, of een mens, ze kan volgen.
+2. **De repo zelf** dwingt af, voor iedereen. `pnpm dev` weigert; een PR die aan de
+   poort of de afspraken komt, laat de check `guard:template` rood staan. Voor Claude
+   Code komt daar `.claude/` bij: hooks die een tool-aanroep onderscheppen vóór hij
+   wordt uitgevoerd en hem blokkeren met uitleg terug aan de agent. Dat is dezelfde
+   afspraak, alleen eerder merkbaar: bij de toetsaanslag in plaats van bij de check.
+   Een aansluiting voor een agent mag nooit een afspraak bevatten die niet in
+   `AGENTS.md` staat; zo betekent "klaar" voor elke agent hetzelfde.
 3. **CI en branch protection** is de bodem. Ook als een agent élke afspraak negeert,
    komt er niets in `main` zonder groene checks.
 
@@ -257,5 +265,6 @@ De namen zitten op verschillende verdiepingen; het zijn geen concurrenten van el
 | **Diff** | het verschil tussen oud en nieuw: precies wat er gewijzigd is |
 | **CI** | de machine die bij elke PR je checks draait en nee kan zeggen |
 | **Ruleset / branch protection** | de GitHub-instelling die bepaalt wie wat mag met `main` |
-| **Hook** | een regel die een tool-aanroep van de agent onderschept en kan blokkeren. Afdwingen in plaats van vragen |
+| **AGENTS.md** | het bestand met de afspraken dat AI-assistenten automatisch lezen. Een afspraak tussen tools, niet van één leverancier |
+| **Hook** | een regel die een tool-aanroep van de agent onderschept en kan blokkeren. Afdwingen in plaats van vragen. In deze stack alleen voor Claude Code; de afspraak zelf staat in `AGENTS.md` en de check |
 | **Happy path** | de route door de app waarop niets misgaat: de normale, geslaagde gang van zaken |
