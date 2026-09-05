@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
+import { databaseModus, gedeeldeDatabase } from "./lib/stack-config.mjs";
 
 /**
  * Schrijft .env.local (voor de app) en .env.test (voor de RLS-tests) op basis van
@@ -8,6 +9,31 @@ import { writeFileSync } from "node:fs";
  * De service role key komt alleen in .env.test terecht, nooit in een VITE_-variabele:
  * die zou anders in de bundel belanden.
  */
+const modus = databaseModus();
+
+if (modus === "geen") {
+  console.error("✗ Deze app heeft geen database (database: false in stack.config.json).");
+  console.error("  Er is dus niets om omgevingsvariabelen voor te schrijven.");
+  process.exit(1);
+}
+
+/**
+ * Een gedeelde database draait niet lokaal: hij is van een andere app. Er valt hier
+ * dus niets te genereren. De waarden komen uit het Supabase-project van de eigenaar
+ * en worden één keer met de hand in .env.local gezet.
+ */
+if (modus === "gedeeld") {
+  const gedeeld = gedeeldeDatabase();
+  console.error("✗ Deze app gebruikt de database van een andere app en heeft er zelf geen.");
+  console.error(`  Eigenaar: ${gedeeld.eigenaar} (Supabase-project ${gedeeld.project_ref})`);
+  console.error("");
+  console.error("  Zet .env.local één keer met de hand op basis van .env.example:");
+  console.error("    VITE_SUPABASE_URL      de URL van het project van de eigenaar");
+  console.error("    VITE_SUPABASE_ANON_KEY de publieke sleutel van dat project");
+  console.error("    VITE_SUPABASE_SCHEMA=api");
+  process.exit(1);
+}
+
 let raw;
 try {
   raw = execFileSync("pnpm", ["exec", "supabase", "status", "-o", "env"], { encoding: "utf8" });
@@ -34,7 +60,7 @@ if (!apiUrl || !anonKey || !serviceRoleKey) {
 
 writeFileSync(
   ".env.local",
-  `# Automatisch geschreven door \`pnpm env:local\`. Niet committen.\nVITE_SUPABASE_URL=${apiUrl}\nVITE_SUPABASE_ANON_KEY=${anonKey}\n`,
+  `# Automatisch geschreven door \`pnpm env:local\`. Niet committen.\nVITE_SUPABASE_URL=${apiUrl}\nVITE_SUPABASE_ANON_KEY=${anonKey}\nVITE_SUPABASE_SCHEMA=public\n`,
 );
 
 const testEnv = [

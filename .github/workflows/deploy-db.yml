@@ -22,11 +22,16 @@ jobs:
       # Uitchecken gebeurt altijd, want de eerste vraag hieronder staat in de repo.
       - uses: actions/checkout@v5
 
-      - name: Heeft deze app wel een database?
+      # Alleen de repo die de database BEZIT mag migraties toepassen. Een app die de
+      # database van een ander gebruikt ("gedeeld") komt hier nooit voorbij: twee
+      # repo's die naar hetzelfde project pushen lopen vast op de migratiehistorie.
+      - name: Bezit deze app haar eigen database?
         id: stack
         run: |
-          aan=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.heeftDatabase()))")
+          aan=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.bezitDatabase()))")
+          modus=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.databaseModus()))")
           echo "database=$aan" >> "$GITHUB_OUTPUT"
+          echo "modus=$modus" >> "$GITHUB_OUTPUT"
 
       - name: Zijn de secrets al gezet?
         id: check
@@ -34,7 +39,10 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
-          if [ "${{ steps.stack.outputs.database }}" != "true" ]; then
+          if [ "${{ steps.stack.outputs.modus }}" = "gedeeld" ]; then
+            echo "::notice::Deze app gebruikt de database van een andere app en bezit het schema niet. Migraties horen thuis in de repo van de eigenaar."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ "${{ steps.stack.outputs.database }}" != "true" ]; then
             echo "::notice::Deze app draait zonder database (database: false in stack.config.json). Migraties worden overgeslagen."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           elif [ -z "$ACCESS_TOKEN" ] || [ -z "$PROJECT_REF" ]; then

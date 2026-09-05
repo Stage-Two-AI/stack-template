@@ -24,11 +24,23 @@ rood, meld dan wat er nog mist in plaats van "het is af".
 Vite + React + TypeScript (strict) · Tailwind + shadcn/ui · React Router · Zod · pnpm.
 Hosting: Vercel. Fouten: Sentry. Achtergrond en het waarom: `docs/WERKWIJZE.md`.
 
-**De database is een keuze, geen gegeven.** In `stack.config.json` staat of deze app
-Supabase (Postgres, auth, storage, RLS) gebruikt. Staat `database` op `false`, dan draait
-de app alleen op Vercel: geen migraties, geen RLS-tests, geen databasejob in CI, en de
-`pnpm db:*`-commando's hieronder zijn niet van toepassing. Zet hem niet op eigen houtje om;
-`docs/WERKWIJZE.md` beschrijft wanneer een database nodig wordt en wat er dan moet gebeuren.
+**De database is een keuze, geen gegeven.** In `stack.config.json` staat `database`, en
+die heeft drie standen:
+
+| Stand | Wat dat betekent |
+|---|---|
+| `false` | geen database. De app draait alleen op Vercel; de `pnpm db:*`-commando's zijn niet van toepassing |
+| `"gedeeld"` | de app gebruikt de database van een **andere** app, via haar contract (het schema `api`). Geen migraties, geen deploy naar Supabase, geen eigen RLS-tests |
+| `true` | de app bezit haar eigen database. De hele laag doet mee |
+
+De regel erachter: **precies één repo mag naar een database schrijven.** Twee repo's die
+allebei migraties pushen naar hetzelfde Supabase-project lopen vast, want de toegepaste
+migraties worden in de database zelf bijgehouden. Staat deze app op `"gedeeld"`, dan hoort
+een schemawijziging thuis in de repo van de eigenaar, en blokkeert `guard:migrations` elke
+migratie die hier terechtkomt.
+
+Zet de stand niet op eigen houtje om; `docs/WERKWIJZE.md` beschrijft wanneer welke stand
+geldt en wat er dan moet gebeuren.
 
 ## Commando's
 
@@ -74,6 +86,10 @@ docs/routes/           de vaste routes, stap voor stap (zie Werkwijzen)
   zijn niet uitwisselbaar tussen die twee, en die map valt buiten `tsconfig.json`.
 - **Databasewijzigingen altijd als migratie** in `supabase/migrations/`, nooit
   handmatig in de Supabase-console. Draai daarna `pnpm db:types` en commit het resultaat.
+- **Gebruikt deze app een gedeelde database** (`"database": "gedeeld"`), schrijf dan hier
+  géén migratie. Het schema is van een andere repo. Je praat uitsluitend met het schema
+  `api`: views om te lezen, functies om te schrijven. Mis je daar iets, dan is dat een
+  wijziging aan het contract en dus een aanvraag bij de eigenaar, geen bestand hier.
 - **Elke nieuwe tabel krijgt RLS aan, een `grant` én policies**, plus een test in
   `tests/rls/` die controleert dat gebruiker A niet bij de gegevens van B komt.
 - **Heeft de app geen database, verzin er dan geen.** Blijvende gegevens gaan naar Vercel

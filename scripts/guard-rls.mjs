@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fail, pass, skip } from "./lib/changed-files.mjs";
-import { heeftDatabase } from "./lib/stack-config.mjs";
+import { bezitDatabase } from "./lib/stack-config.mjs";
 
 /**
  * In een browser-app is de database je beveiliging: er is geen tussenlaag die
@@ -12,8 +12,8 @@ import { heeftDatabase } from "./lib/stack-config.mjs";
  * Deze guard leest álle migraties (niet alleen de gewijzigde) en eist dat elke
  * tabel in het schema `public` RLS aan heeft staan én minstens één policy heeft.
  */
-if (!heeftDatabase()) {
-  skip("deze app heeft geen database (database: false in stack.config.json)");
+if (!bezitDatabase()) {
+  skip("deze app bezit geen database, dus ook geen tabellen om te beveiligen");
 }
 
 const MIGRATIONS_DIR = "supabase/migrations";

@@ -1,5 +1,22 @@
+import { readFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { TEST_USER } from "./test-user";
+
+/**
+ * Alleen een app met een eigen database heeft een eigen gebruikersadministratie om
+ * een testgebruiker in aan te maken. Zonder database is er niets in te loggen, en bij
+ * een gedeelde database staan de gebruikers in het project van een andere app en gaan
+ * we daar niets aanmaken.
+ */
+function heeftEigenGebruikers(): boolean {
+  try {
+    const config: unknown = JSON.parse(readFileSync("stack.config.json", "utf8"));
+    const database = (config as { database?: unknown }).database;
+    return database !== false && database !== "gedeeld";
+  } catch {
+    return true;
+  }
+}
 
 /**
  * Maakt de testgebruiker aan voordat de end-to-end tests draaien. Zo heeft de test
@@ -7,6 +24,8 @@ import { TEST_USER } from "./test-user";
  * de omgeving maakt zichzelf.
  */
 export default async function globalSetup(): Promise<void> {
+  if (!heeftEigenGebruikers()) return;
+
   const url = process.env.SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 

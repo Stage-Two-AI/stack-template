@@ -11,6 +11,13 @@ import { z } from "zod";
 const envSchema = z.object({
   VITE_SUPABASE_URL: z.string().min(1, "VITE_SUPABASE_URL ontbreekt"),
   VITE_SUPABASE_ANON_KEY: z.string().min(20, "VITE_SUPABASE_ANON_KEY ontbreekt of is te kort"),
+  /**
+   * Welk databaseschema deze app gebruikt. Een app met een eigen database praat met
+   * `public`. Een app die de database van een andere app gebruikt (`"database":
+   * "gedeeld"` in stack.config.json) praat uitsluitend met haar contract: het schema
+   * `api`. Meer smaken zijn er niet, en dat is opzet.
+   */
+  VITE_SUPABASE_SCHEMA: z.enum(["public", "api"]).default("public"),
 });
 
 const parsed = envSchema.safeParse(import.meta.env);

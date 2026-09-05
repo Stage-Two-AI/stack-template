@@ -15,7 +15,7 @@
     "het project. CLAUDE.md is niets dan een import van AGENTS.md en wordt in zijn",
     "geheel vervangen."
   ],
-  "stackVersion": 5,
+  "stackVersion": 6,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",

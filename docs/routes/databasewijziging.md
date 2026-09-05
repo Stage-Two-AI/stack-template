@@ -4,6 +4,21 @@ De database is het enige onderdeel van deze stack dat gegevens **onherstelbaar**
 vernietigen. Een merge-knop die `drop column` uitvoert is krachtig gereedschap. Loop
 daarom deze route af, ook als de wijziging klein lijkt.
 
+## Stap 0: bezit deze app de database wel?
+
+Kijk in `stack.config.json`. Staat `database` op `"gedeeld"`, dan **stopt deze route hier**.
+Deze app gebruikt de database van een andere app en mag het schema daarvan niet wijzigen;
+`guard:migrations` blokkeert elke migratie die hier terechtkomt.
+
+Je praat dan uitsluitend met het schema `api`, het contract van die andere app: views om te
+lezen, functies om te schrijven. Mis je daar iets, dan is dat een wijziging aan het contract.
+Dat is een aanvraag bij de eigenaar van die database (die staat in `gedeelde_database.eigenaar`),
+geen bestand in deze repo.
+
+Waarom zo streng: Supabase houdt in de database zelf bij welke migraties gedraaid zijn.
+Zouden twee repo's daarheen pushen, dan kent de tweede de bestanden van de eerste niet en
+faalt vanaf dat moment elke deploy. Precies één repo per database, altijd.
+
 ## Nooit met de hand in de Supabase-console
 
 Niet in het dashboard klikken, niet even een kolom toevoegen "om het te proberen".

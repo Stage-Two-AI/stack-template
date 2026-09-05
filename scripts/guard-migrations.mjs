@@ -1,6 +1,6 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { changedFiles, fail, pass, pullRequestBody, skip } from "./lib/changed-files.mjs";
-import { heeftDatabase } from "./lib/stack-config.mjs";
+import { bezitDatabase, databaseModus } from "./lib/stack-config.mjs";
 
 /**
  * De migratiepijplijn is het enige onderdeel van deze stack dat data onherstelbaar
@@ -9,8 +9,46 @@ import { heeftDatabase } from "./lib/stack-config.mjs";
  *
  * Bevestigen doe je met de regel `Bevestigd: destructieve migratie` in de PR-tekst.
  */
-if (!heeftDatabase()) {
-  skip("deze app heeft geen database (database: false in stack.config.json)");
+/**
+ * Migratiebestanden die in de repo staan, los van wat er in deze PR gewijzigd is.
+ * Voor de eigendomsvraag hieronder telt de aanwezigheid, niet de diff.
+ */
+function migratiesInRepo() {
+  try {
+    return readdirSync("supabase/migrations").filter((naam) => naam.endsWith(".sql"));
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Eén schrijver per database. Een app die de database van een ander gebruikt
+ * (`"gedeeld"`) of er helemaal geen heeft (`false`), hoort geen migraties te
+ * bevatten. Gebeurt dat toch, dan zouden twee repo's naar dezelfde database gaan
+ * pushen, en dat loopt onherroepelijk vast: Supabase houdt de toegepaste migraties
+ * bij in de database zelf, en de tweede repo kent de bestanden van de eerste niet.
+ */
+const modus = databaseModus();
+if (!bezitDatabase()) {
+  const aanwezig = migratiesInRepo();
+  if (aanwezig.length > 0) {
+    fail("Deze app bezit geen database, maar er staan wél migraties in de repo.", [
+      ...aanwezig.map((naam) => `- supabase/migrations/${naam}`),
+      "",
+      modus === "gedeeld"
+        ? 'Deze app staat op `"database": "gedeeld"`: ze gebruikt de database van een'
+        : 'Deze app staat op `"database": false`: ze heeft helemaal geen database.',
+      modus === "gedeeld" ? "andere app en mag het schema daarvan niet wijzigen." : "",
+      "",
+      "Wat je wél doet:",
+      "  - hoort de wijziging bij het schema? Doe hem in de repo die de database bezit.",
+      "  - heeft deze app echt een eigen database nodig? Dan is dat een beslissing van",
+      "    Stage Two, niet een bestand erbij. Volg de route docs/routes/nieuwe-app-aanvragen.md.",
+      "",
+      "Verwijder deze bestanden om de poort weer groen te krijgen.",
+    ]);
+  }
+  skip(`deze app bezit geen database (database: ${modus === "gedeeld" ? '"gedeeld"' : "false"})`);
 }
 
 const DESTRUCTIVE = [
