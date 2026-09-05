@@ -11,6 +11,22 @@ import { readFileSync } from "node:fs";
  */
 const STANDAARD = { database: true };
 
+/**
+ * De drie standen van `database`, vertaald naar één woord waar de rest van de
+ * stack op stuurt:
+ *
+ *   "geen"     de app heeft geen database
+ *   "gedeeld"  de app gebruikt de database van een ándere app, via haar contract
+ *              (het schema `api`). Deze repo bezit dat schema niet en wijzigt het
+ *              nooit: geen migraties, geen deploy, geen RLS-tests.
+ *   "eigen"    de app bezit haar eigen database en dus ook het schema
+ *
+ * Het onderscheid tussen "gedeeld" en "eigen" is de belangrijkste regel van de
+ * hele databaselaag: **precies één repo mag naar een database schrijven.** Twee
+ * repo's die allebei migraties pushen naar hetzelfde Supabase-project lopen vast,
+ * want Supabase houdt de toegepaste migraties bij in de database zelf en de tweede
+ * repo kent de bestanden van de eerste niet.
+ */
 export function stackConfig() {
   try {
     const gelezen = JSON.parse(readFileSync("stack.config.json", "utf8"));
@@ -20,6 +36,45 @@ export function stackConfig() {
   }
 }
 
+export function databaseModus() {
+  const waarde = stackConfig().database;
+  if (waarde === false) return "geen";
+  if (waarde === true) return "eigen";
+  if (waarde === "gedeeld") return "gedeeld";
+  throw new Error(
+    `stack.config.json: "database" is ${JSON.stringify(waarde)}, en dat is geen geldige stand.\n` +
+      'Kies uit: false (geen database), "gedeeld" (gebruikt de database van een andere app), true (eigen database).',
+  );
+}
+
+/** Praat deze app met een database? Waar bij zowel "gedeeld" als "eigen". */
 export function heeftDatabase() {
-  return stackConfig().database !== false;
+  return databaseModus() !== "geen";
+}
+
+/**
+ * Bezit deze repo het databaseschema? Alleen waar bij "eigen". Dit is de vraag die
+ * telt voor alles wat schríjft: migraties, de deploy-workflow en de RLS-guards.
+ */
+export function bezitDatabase() {
+  return databaseModus() === "eigen";
+}
+
+/**
+ * De gegevens van de gedeelde database: van wie hij is, en welk Supabase-project
+ * het betreft. De project-ref is geen geheim (hij staat in de URL van elk verzoek),
+ * dus die mag gewoon in de config staan.
+ */
+export function gedeeldeDatabase() {
+  if (databaseModus() !== "gedeeld") return null;
+  const config = stackConfig().gedeelde_database;
+  if (!config?.project_ref) {
+    throw new Error(
+      'stack.config.json: bij `"database": "gedeeld"` hoort een blok `gedeelde_database`\n' +
+        "met minstens `project_ref`, en bij voorkeur ook `eigenaar` (de repo die het schema bezit).\n" +
+        "Voorbeeld:\n" +
+        '  "gedeelde_database": { "eigenaar": "Klant-Org/erp", "project_ref": "abcdefghijklmnop" }',
+    );
+  }
+  return { eigenaar: config.eigenaar ?? "onbekend", project_ref: config.project_ref };
 }

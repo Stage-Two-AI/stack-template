@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
-import { generate, HEADER, stripHeader, TARGET } from "./lib/db-types.mjs";
+import { generate, HEADER, kanGenereren, stripHeader, TARGET } from "./lib/db-types.mjs";
+import { databaseModus } from "./lib/stack-config.mjs";
 
 /**
  * De gegenereerde databasetypes zijn de brug tussen je database en je code.
@@ -10,6 +11,23 @@ import { generate, HEADER, stripHeader, TARGET } from "./lib/db-types.mjs";
  * genereert met exact dezelfde versie. Dat is geen detail: een andere CLI-versie
  * geeft een andere opmaak en dus een valse mismatch.
  */
+if (databaseModus() === "geen") {
+  console.log("overgeslagen: deze app heeft geen database");
+  process.exit(0);
+}
+
+/**
+ * Bij een gedeelde database komen de types uit het project van de eigenaar, en dat
+ * vraagt een token. Staat dat er niet (een kloon zonder secrets), dan controleren
+ * we niets in plaats van vals alarm te slaan.
+ */
+if (!kanGenereren()) {
+  console.log(
+    "overgeslagen: SUPABASE_ACCESS_TOKEN ontbreekt, dus het contract is niet op te halen",
+  );
+  process.exit(0);
+}
+
 let generated;
 try {
   generated = generate();

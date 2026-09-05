@@ -1,6 +1,6 @@
 # Werkwijze
 
-*Hoort bij de Stage Two-stack, versie 5. Dit bestand komt uit de gedeelde template en
+*Hoort bij de Stage Two-stack, versie 6. Dit bestand komt uit de gedeelde template en
 wordt bijgewerkt via een stack-sync pull request; wijzig het niet per project.*
 
 Dit legt uit hóé er in dit project gewerkt wordt en vooral **waarom**. De korte,
@@ -69,11 +69,51 @@ gebouwde bundel doorzoekt. Die tweede is de belangrijkste van allemaal.
 
 ## 3. Databasewijzigingen lopen via GitHub
 
-### Eerst: heeft deze app wel een database nodig?
+### Eerst: hoe komt deze app aan haar gegevens?
 
-Standaard is **nee**. In `stack.config.json` staat `database`, en in een nieuw project zet
-het opzetscript die op `false`. De app draait dan alleen op Vercel en dit hele hoofdstuk is
-niet van toepassing.
+In `stack.config.json` staat `database`, met drie standen. In een nieuw project zet het
+opzetscript hem op `false`.
+
+| Stand | Wanneer | Wat er meedoet |
+|---|---|---|
+| `false` | de app heeft geen blijvende gegevens | niets uit dit hoofdstuk |
+| `"gedeeld"` | de gegevens bestaan al, in de database van een andere app | alleen lezen en schrijven via het contract |
+| `true` | de app bezit haar eigen gegevens | migraties, RLS, typegeneratie, deploy |
+
+**De middelste stand is de belangrijkste, en de minst bekende.** Een tweede app op
+bestaande gegevens krijgt géén eigen database. Ze praat met de database van de app die
+die gegevens bezit, en uitsluitend via het schema `api`: het contract. Views om te lezen,
+functies om te schrijven. De onderliggende tabellen bestaan voor haar niet.
+
+Dat is geen zuinigheid maar een harde technische grens: **precies één repo mag naar een
+database schrijven.** Supabase houdt in de database zelf bij welke migraties gedraaid zijn.
+Pushen twee repo's naar hetzelfde project, dan kent de tweede de bestanden van de eerste
+niet, loopt de migratiehistorie uit de pas en faalt elke volgende deploy. `guard:migrations`
+blokkeert daarom elke migratie in een app die de database niet bezit.
+
+Bij `"gedeeld"` hoort een blok met de eigenaar erbij:
+
+```json
+{
+  "database": "gedeeld",
+  "gedeelde_database": {
+    "eigenaar": "Klant-Org/erp",
+    "project_ref": "abcdefghijklmnopqrst"
+  }
+}
+```
+
+Die project-ref is geen geheim: hij staat in de URL van elk verzoek. De typegeneratie haalt
+het contract uit dat project op (`pnpm db:types`, met een `SUPABASE_ACCESS_TOKEN`), zodat
+je in deze app gewoon typecontrole houdt op andermans schema.
+
+Mis je iets in het contract, dan is dat een wijziging aan het contract: een aanvraag bij de
+eigenaar van die database, geen migratie hier.
+
+In de code is de koppeling één omgevingsvariabele: `VITE_SUPABASE_SCHEMA=api` (in
+`.env.local` en in Vercel). `src/lib/supabase.ts` leest die en praat dan met het schema
+`api` in plaats van `public`; `pnpm env:local` doet bij deze stand niets, want er draait
+geen lokale database. De waarden van de eigenaar zet je één keer met de hand in `.env.local`.
 
 (In `stack-template` zelf staat hij bewust op `true`: die repo moet zijn eigen databaselaag
 blijven testen, anders verrot het onderdeel dat jij straks aanzet.)
@@ -110,6 +150,13 @@ of met zoeken over inhoud, dan is dat het signaal om om te schakelen. Niet doorm
 RLS-guards, de typegeneratie en de deploy-workflow. Zet `database` op `true`, maak het
 Supabase-project aan, zet de drie secrets, en de hele laag hieronder wordt wakker. Andersom
 kan ook, maar bedenk dat gegevens die er al in staan dan niet vanzelf meeverhuizen.
+
+**Welke stand het wordt, beslist Stage Two**, niet de app zelf. De vraag "eigen database of
+gedeeld" hangt aan twee dingen die je van binnen de repo niet kunt overzien: delen de apps
+dezelfde inlogaccounts (één Supabase-project heeft er precies één stel), en moet je gegevens
+uit beide in één opvraging kunnen combineren. Is het antwoord op allebei ja, dan is het
+dezelfde database. Anders een eigen. Volg de route `docs/routes/nieuwe-app-aanvragen.md`; die stelt de
+vraag in gewone taal.
 
 ### Als er wel een database is
 

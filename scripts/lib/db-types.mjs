@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { databaseModus, gedeeldeDatabase } from "./stack-config.mjs";
 
 export const TARGET = "src/lib/database.types.ts";
 
@@ -8,9 +9,33 @@ export const HEADER = [
   "// De CI controleert of dit bestand nog gelijkloopt met het databaseschema.",
 ].join("\n");
 
-/** Genereert de types uit de dráaiende lokale database. */
+/**
+ * Een app met een gedeelde database heeft geen lokale Supabase om types uit te
+ * halen: haar schema staat in het project van een andere app. De types komen dan
+ * uit dát project, en uitsluitend uit het schema `api` — het contract. De rest van
+ * die database bestaat voor deze app niet, en dat hoort ook zo.
+ *
+ * Daar is wel een SUPABASE_ACCESS_TOKEN voor nodig. Ontbreekt die, dan kan er niets
+ * gegenereerd worden; de aanroeper beslist of dat een fout is of een reden om over
+ * te slaan.
+ */
+export function kanGenereren() {
+  if (databaseModus() !== "gedeeld") return true;
+  return Boolean(process.env.SUPABASE_ACCESS_TOKEN);
+}
+
+function argumenten() {
+  const basis = ["exec", "supabase", "gen", "types", "typescript"];
+  if (databaseModus() === "gedeeld") {
+    const gedeeld = gedeeldeDatabase();
+    return [...basis, "--project-id", gedeeld.project_ref, "--schema", "api"];
+  }
+  return [...basis, "--local"];
+}
+
+/** Genereert de databasetypes: lokaal bij een eigen database, anders uit het contract. */
 export function generate() {
-  return execFileSync("pnpm", ["exec", "supabase", "gen", "types", "typescript", "--local"], {
+  return execFileSync("pnpm", argumenten(), {
     encoding: "utf8",
     maxBuffer: 20 * 1024 * 1024,
   });

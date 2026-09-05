@@ -73,9 +73,17 @@ jobs:
   # Alles wat een echte database nodig heeft. Draait tegen een lokale Supabase,
   # dus zonder sleutels van een cloudomgeving en zonder iets aan te raken wat leeft.
   #
-  # Heeft de app geen database (`database: false` in stack.config.json), dan slaan
-  # de Supabase-stappen zichzelf over en blijven alleen de browsertests over. De job
-  # zelf blijft dan wél draaien: hij staat als verplichte check in de ruleset, en een
+  # Er zijn drie standen (`database` in stack.config.json), en ze doen hier elk iets
+  # anders:
+  #
+  #   true       eigen database: lokale Supabase, typecontrole, RLS-tests, browsertest
+  #   "gedeeld"  database van een andere app: alleen de contracttypes worden
+  #              gecontroleerd. Er valt hier niets lokaal te starten en er zijn geen
+  #              eigen tabellen om te beveiligen; dat is de verantwoordelijkheid van
+  #              de repo die de database bezit
+  #   false      geen database: alleen de browsertest
+  #
+  # De job zelf draait altijd: hij staat als verplichte check in de ruleset, en een
   # job die in zijn geheel wordt overgeslagen laat die check hangen.
   database:
     name: Database en end-to-end
@@ -95,35 +103,55 @@ jobs:
       - name: Doet de databaselaag mee?
         id: stack
         run: |
-          aan=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.heeftDatabase()))")
-          echo "database=$aan" >> "$GITHUB_OUTPUT"
-          if [ "$aan" = "true" ]; then
-            echo "::notice::Databaselaag staat aan: migraties, typecontrole en RLS-tests draaien."
-          else
-            echo "::notice::Deze app heeft geen database. Alleen de end-to-end test draait."
-          fi
+          modus=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.databaseModus()))")
+          echo "modus=$modus" >> "$GITHUB_OUTPUT"
+          case "$modus" in
+            eigen)
+              echo "::notice::Eigen database: migraties, typecontrole, RLS-tests en browsertest draaien."
+              ;;
+            gedeeld)
+              echo "::notice::Gedeelde database: alleen de contracttypes worden gecontroleerd. Migraties en RLS horen bij de repo die de database bezit."
+              ;;
+            *)
+              echo "::notice::Deze app heeft geen database. Alleen de end-to-end test draait."
+              ;;
+          esac
 
       - name: Supabase starten (draait meteen alle migraties)
-        if: steps.stack.outputs.database == 'true'
+        if: steps.stack.outputs.modus == 'eigen'
         run: pnpm exec supabase start
 
       - name: Omgevingsvariabelen schrijven
-        if: steps.stack.outputs.database == 'true'
+        if: steps.stack.outputs.modus == 'eigen'
         run: pnpm env:local
 
+      # Bij een eigen database uit de lokale Supabase; bij een gedeelde database uit
+      # het `api`-schema van de eigenaar. Ontbreekt het token, dan slaat de check
+      # zichzelf over in plaats van vals alarm te slaan.
       - name: Databasetypes lopen gelijk met het schema
-        if: steps.stack.outputs.database == 'true'
+        if: steps.stack.outputs.modus != 'geen'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: pnpm db:types:check
 
       - name: RLS-tests
-        if: steps.stack.outputs.database == 'true'
+        if: steps.stack.outputs.modus == 'eigen'
         run: pnpm test:rls
 
       - name: Browser installeren
+        if: steps.stack.outputs.modus != 'gedeeld'
         run: pnpm exec playwright install --with-deps chromium
 
+      # Een app met een gedeelde database heeft geen omgeving om tegen te testen die
+      # in de CI mag draaien: haar gegevens staan in het project van een andere app.
+      # De browsertest draait daar via de Vercel-preview van de PR.
       - name: End-to-end test
+        if: steps.stack.outputs.modus != 'gedeeld'
         run: pnpm test:e2e
+
+      - name: End-to-end test overgeslagen
+        if: steps.stack.outputs.modus == 'gedeeld'
+        run: echo "::notice::Deze app gebruikt de database van een andere app. Loop de Vercel-preview van deze PR na in plaats van te vertrouwen op een browsertest in CI."
 
       - name: Rapport bewaren als er iets faalde
         if: failure()
