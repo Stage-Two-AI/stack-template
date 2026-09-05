@@ -8,7 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.mjs",
     "build": "vite build",
     "preview": "vite preview --port 4173 --host 127.0.0.1 --strictPort",
     "typecheck": "tsc --noEmit",
@@ -19,12 +19,13 @@
     "test:rls": "vitest run --config vitest.rls.config.ts",
     "test:e2e": "playwright test",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm guard",
-    "guard": "pnpm guard:tests && pnpm guard:migrations && pnpm guard:rls && pnpm guard:secrets && pnpm guard:escapes",
+    "guard": "pnpm guard:tests && pnpm guard:migrations && pnpm guard:rls && pnpm guard:secrets && pnpm guard:escapes && pnpm guard:template",
     "guard:tests": "node scripts/guard-tests.mjs",
     "guard:migrations": "node scripts/guard-migrations.mjs",
     "guard:rls": "node scripts/guard-rls.mjs",
     "guard:secrets": "node scripts/guard-secrets.mjs",
     "guard:escapes": "node scripts/guard-escape-hatches.mjs",
+    "guard:template": "node scripts/guard-template.mjs",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",

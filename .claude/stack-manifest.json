@@ -4,11 +4,18 @@
     "De stack-sync gebruikt dit om alleen de template-bestanden bij te werken,",
     "zonder ooit aan het werk van de klant te komen.",
     "",
-    "Dit werkt alleen omdat de hooks in .claude/settings.json wijzigingen aan deze",
-    "paden blokkeren: wat niemand lokaal aanpast, kun je veilig in zijn geheel",
-    "vervangen. De afdwinging en de sync houden elkaar dus overeind."
+    "Dit werkt omdat niemand deze paden per project aanpast, en dat wordt op drie",
+    "manieren bewaakt: de check guard:template laat een PR die eraan komt rood staan",
+    "(voor elke agent en elk mens), de hook in .claude/settings.json houdt Claude Code",
+    "al bij de toetsaanslag tegen, en de sync zet een afwijking elk uur terug. Wat",
+    "niemand lokaal aanpast, kun je veilig in zijn geheel vervangen.",
+    "",
+    "AGENTS.md is de kern: de afspraken voor elke agent. Alleen het deel tussen de",
+    "markeringen is van de template; de projectnaam en omschrijving erboven zijn van",
+    "het project. CLAUDE.md is niets dan een import van AGENTS.md en wordt in zijn",
+    "geheel vervangen."
   ],
-  "stackVersion": 4,
+  "stackVersion": 5,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",
@@ -18,6 +25,7 @@
       ".claude/skills/verder-werken/SKILL.md",
       ".claude/skills/databasewijziging/SKILL.md",
       ".claude/skills/nieuwe-app-aanvragen/SKILL.md",
+      "CLAUDE.md",
       ".github/workflows/ci.yml",
       ".github/workflows/deploy-db.yml",
       ".github/pull_request_template.md",
@@ -30,17 +38,22 @@
       "scripts/guard-rls.mjs",
       "scripts/guard-secrets.mjs",
       "scripts/guard-escape-hatches.mjs",
+      "scripts/guard-template.mjs",
       "scripts/check-types-in-sync.mjs",
       "scripts/write-db-types.mjs",
       "scripts/write-local-env.mjs",
+      "scripts/dev.mjs",
       "docs/WERKWIJZE.md",
+      "docs/routes/verder-werken.md",
+      "docs/routes/databasewijziging.md",
+      "docs/routes/nieuwe-app-aanvragen.md",
       "biome.json"
     ],
     "sleutelsSamenvoegen": {
       "package.json": ["scripts"]
     },
     "tussenMarkeringen": {
-      "CLAUDE.md": "stack"
+      "AGENTS.md": "stack"
     }
   },
   "vanHetProject": [

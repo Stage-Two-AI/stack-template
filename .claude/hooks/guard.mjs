@@ -7,6 +7,14 @@
  * daarom in de repo en geldt dus automatisch ook voor de Claude-sessies van de
  * klant, zonder dat iemand iets hoeft te installeren.
  *
+ * Dit is de aansluiting van Claude Code op de afspraken in AGENTS.md. Er staat hier
+ * geen enkele regel die niet óók zonder deze hook wordt afgedwongen: `pnpm dev`
+ * weigert zelf (scripts/dev.mjs), pushen naar main en force-pushen weigert de
+ * ruleset, en wijzigingen aan de beschermde paden laat `guard:template` rood staan.
+ * Deze hook maakt dat alleen eerder merkbaar: bij de toetsaanslag in plaats van
+ * bij een rode check. Een andere agent zonder hooks mist dus geen afspraak, alleen
+ * de snelheid waarmee hij hem hoort.
+ *
  * Bewust openlaten kan met de omgevingsvariabele STACK_ALLOW_POLICY_EDIT=1,
  * voor wanneer je met opzet aan het vangnet zelf werkt.
  */
@@ -65,6 +73,10 @@ const PROTECTED_PATHS = [
   { prefix: "scripts/check-", what: "een controlescript" },
   { prefix: "scripts/lib/", what: "gedeelde code van de guards" },
   { prefix: "scripts/write-db-types", what: "de typegeneratie" },
+  { prefix: "scripts/dev.mjs", what: "de rem op de dev-server" },
+  { prefix: "docs/WERKWIJZE.md", what: "de werkwijze" },
+  { prefix: "docs/routes/", what: "een vaste route" },
+  { prefix: "CLAUDE.md", what: "de aansluiting op AGENTS.md" },
 ];
 
 function deny(reason) {
@@ -113,7 +125,8 @@ if (["Write", "Edit", "NotebookEdit"].includes(toolName) && typeof input.file_pa
           "",
           "Deze bestanden komen uit stack-template en worden bijgewerkt via een",
           "stack-sync pull request, zodat elk project dezelfde afspraken houdt.",
-          "Wijzig je het hier, dan wordt het bij de volgende sync overschreven.",
+          "Wijzig je het hier, dan laat de check guard:template de PR rood staan",
+          "en wordt het bij de volgende sync overschreven.",
           "",
           "Klopt er echt iets niet? Meld het bij Stage Two, dan passen we het",
           "in de template aan en krijgt iedereen de verbetering.",

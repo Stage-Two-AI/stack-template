@@ -23,7 +23,7 @@ Vercel-preview:
 
 <!-- Wijzigt deze PR de database op een manier die gegevens kan vernietigen?
      De check `guard:migrations` blokkeert de PR tot deze regel er exact zo staat.
-     Lees eerst de skill `databasewijziging`. -->
+     Lees eerst de route `docs/routes/databasewijziging.md`. -->
 
 <!-- Bevestigd: destructieve migratie -->
 
@@ -32,3 +32,10 @@ Vercel-preview:
      niets te testen valt, bijvoorbeeld bij een pure tekstwijziging. -->
 
 <!-- Geen tests nodig: <reden> -->
+
+<!-- Raakt deze PR bestanden van de gedeelde template (.github/workflows, scripts,
+     .claude, docs/routes, docs/WERKWIJZE.md, AGENTS.md onder de markering)? Die worden
+     per project niet gewijzigd; meld het liever bij Stage Two. Is het echt bewust,
+     haal dan de commentaartekens weg. De check `guard:template` blokkeert de PR anders. -->
+
+<!-- Bevestigd: templatebestanden gewijzigd -->
