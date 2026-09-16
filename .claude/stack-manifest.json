@@ -15,7 +15,7 @@
     "het project. CLAUDE.md is niets dan een import van AGENTS.md en wordt in zijn",
     "geheel vervangen."
   ],
-  "stackVersion": 7,
+  "stackVersion": 8,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",
@@ -43,6 +43,7 @@
       "scripts/check-types-in-sync.mjs",
       "scripts/write-db-types.mjs",
       "scripts/write-local-env.mjs",
+      "scripts/write-test-env.mjs",
       "scripts/dev.mjs",
       "docs/WERKWIJZE.md",
       "docs/routes/verder-werken.md",

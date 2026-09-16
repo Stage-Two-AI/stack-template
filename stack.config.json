@@ -23,7 +23,14 @@
     "",
     "Van false naar true of \"gedeeld\" is een wijziging van een regel; alles wat erbij",
     "hoort staat al klaar in deze repo. Zie docs/WERKWIJZE.md voor wanneer je hem omzet.",
-    "Welke stand het wordt, beslist Stage Two bij het opzetten van de app."
+    "Welke stand het wordt, beslist Stage Two bij het opzetten van de app.",
+    "",
+    "testdatabase (optioneel, alleen bij een app met database): een tweede Supabase-project,",
+    "los van productie, waar de Vercel-preview naar wijst en waar je lokaal tegenaan mag",
+    "kijken (`pnpm env:test`). Migraties gaan er bij een merge als eerste op (canary): falen",
+    "ze daar, dan blijft productie onaangeroerd. Het databasewachtwoord ervan staat als",
+    "Actions-secret SUPABASE_TEST_DB_PASSWORD. Voorbeeld:",
+    "  \"testdatabase\": { \"project_ref\": \"abcdefghijklmnopqrst\" }"
   ],
   "database": true
 }

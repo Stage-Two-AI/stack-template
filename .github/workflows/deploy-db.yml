@@ -30,8 +30,10 @@ jobs:
         run: |
           aan=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.bezitDatabase()))")
           modus=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.databaseModus()))")
+          testref=$(node -e "import('./scripts/lib/stack-config.mjs').then((m) => console.log(m.testDatabase()?.project_ref ?? ''))")
           echo "database=$aan" >> "$GITHUB_OUTPUT"
           echo "modus=$modus" >> "$GITHUB_OUTPUT"
+          echo "testref=$testref" >> "$GITHUB_OUTPUT"
 
       - name: Zijn de secrets al gezet?
         id: check
@@ -62,6 +64,40 @@ jobs:
 
       - if: steps.check.outputs.skip != 'true'
         run: pnpm install --frozen-lockfile
+
+      # Eerst de testdatabase (canary), als die er is. Dat is hetzelfde project als
+      # waar de Vercel-preview naar wijst. Falen de migraties daar, dan stopt de job
+      # hier en blijft productie onaangeroerd. Bijkomend voordeel: de preview van de
+      # volgende PR draait op het schema dat productie ook heeft.
+      - name: Is er een testdatabase om eerst op te proberen?
+        if: steps.check.outputs.skip != 'true'
+        id: canary
+        env:
+          TEST_DB_PASSWORD: ${{ secrets.SUPABASE_TEST_DB_PASSWORD }}
+        run: |
+          if [ -z "${{ steps.stack.outputs.testref }}" ]; then
+            echo "::notice::Geen testdatabase ingesteld (blok testdatabase in stack.config.json). Migraties gaan rechtstreeks naar productie."
+            echo "doen=false" >> "$GITHUB_OUTPUT"
+          elif [ -z "$TEST_DB_PASSWORD" ]; then
+            echo "::warning::Er is een testdatabase ingesteld, maar het secret SUPABASE_TEST_DB_PASSWORD ontbreekt. De canary wordt overgeslagen; zet het secret (BOOTSTRAP.md stap 5)."
+            echo "doen=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "doen=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Canary - koppelen aan de testdatabase
+        if: steps.check.outputs.skip != 'true' && steps.canary.outputs.doen == 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_TEST_DB_PASSWORD }}
+        run: pnpm exec supabase link --project-ref "${{ steps.stack.outputs.testref }}"
+
+      - name: Canary - migraties toepassen op de testdatabase
+        if: steps.check.outputs.skip != 'true' && steps.canary.outputs.doen == 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_TEST_DB_PASSWORD }}
+        run: pnpm exec supabase db push --include-all
 
       # De Supabase CLI zit als devDependency in package.json, dus hier draait exact
       # dezelfde versie als op de machine van de bouwer. Dat voorkomt verrassingen.

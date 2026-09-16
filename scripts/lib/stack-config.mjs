@@ -78,3 +78,30 @@ export function gedeeldeDatabase() {
   }
   return { eigenaar: config.eigenaar ?? "onbekend", project_ref: config.project_ref };
 }
+
+/**
+ * De testdatabase: een tweede Supabase-project, los van productie, waar de
+ * Vercel-preview naar wijst en waar je lokaal tegenaan mag kijken. Alleen zinvol
+ * als de app met een database praat. Optioneel: ontbreekt het blok, dan is er
+ * geen testdatabase en gebruikt de preview wat er in Vercel staat ingesteld.
+ *
+ *   "testdatabase": { "project_ref": "abcdefghijklmnopqrst" }
+ *
+ * De project-ref is geen geheim (hij staat in de URL van elk verzoek). Het
+ * databasewachtwoord van dit project is dat wél; dat staat als Actions-secret
+ * SUPABASE_TEST_DB_PASSWORD en wordt alleen gebruikt om migraties er als eerste
+ * op te draaien (de canary in deploy-db.yml).
+ */
+export function testDatabase() {
+  if (!heeftDatabase()) return null;
+  const config = stackConfig().testdatabase;
+  if (!config) return null;
+  if (!/^[a-z]{20}$/.test(config.project_ref ?? "")) {
+    throw new Error(
+      "stack.config.json: het blok `testdatabase` hoort een `project_ref` te hebben van twintig\n" +
+        "kleine letters, zoals in de URL van het Supabase-project (https://<ref>.supabase.co).\n" +
+        'Voorbeeld:\n  "testdatabase": { "project_ref": "abcdefghijklmnopqrst" }',
+    );
+  }
+  return { project_ref: config.project_ref, url: `https://${config.project_ref}.supabase.co` };
+}

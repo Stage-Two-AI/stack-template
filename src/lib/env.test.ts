@@ -7,4 +7,10 @@ describe("env", () => {
     // database, en die praat met `public`. `api` is alleen voor een gedeelde database.
     expect(env.VITE_SUPABASE_SCHEMA).toBe("public");
   });
+
+  it("is standaard geen testomgeving", () => {
+    // Zonder VITE_OMGEVING is dit productie (of een lokale Docker-database) en hoort er
+    // geen testbalk in beeld te staan. Alleen `test` zet hem aan.
+    expect(env.VITE_OMGEVING).toBeUndefined();
+  });
 });

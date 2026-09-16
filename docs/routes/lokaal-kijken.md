@@ -66,15 +66,21 @@ Dezelfde database als waar de Vercel-preview naar wijst: een apart Supabase-proj
 testgegevens, los van productie. Dit is de snelste variant voor wie gewoon wil zien
 hoe een scherm eruitziet met echte-lijkende gegevens.
 
-1. Zoek op welk Supabase-project de testdatabase van deze app is. Dat staat in het
-   projectdeel bovenaan `AGENTS.md`; staat het er niet, vraag het aan Stage Two.
-   Gebruik nooit een project waarvan je niet zeker weet dat het de testdatabase is.
-2. Kopieer `.env.example` naar `.env.local` en vul in:
-   - `VITE_SUPABASE_URL`: de URL van dat testproject
-   - `VITE_SUPABASE_ANON_KEY`: de publieke anon-sleutel van dat testproject (Supabase
-     dashboard > Project Settings > API keys > anon / public)
-   - `VITE_SUPABASE_SCHEMA`: `public`, of `api` als deze app op `"gedeeld"` staat
-3. `.env.local` staat in `.gitignore` en blijft op je computer. Commit hem nooit.
+Welk project dat is, staat in `stack.config.json` onder `testdatabase`. Staat dat blok
+er niet, dan heeft deze app geen testdatabase: gebruik variant A, of vraag Stage Two.
+
+```bash
+pnpm env:test      # schrijft .env.local met de testdatabase erin
+```
+
+De eerste keer vraagt dit om een login bij Supabase op deze computer
+(`pnpm exec supabase login`, opent de browser). Lukt dat niet, dan zegt het script
+precies wat je met de hand in `.env.local` zet: de URL van het testproject, de publieke
+anon-sleutel (Supabase dashboard > Project Settings > API keys > anon / public) en het
+schema (`public`, of `api` als deze app op `"gedeeld"` staat).
+
+`.env.local` staat in `.gitignore` en blijft op je computer. Commit hem nooit. Staat er
+al een `.env.local`, dan overschrijft het script die alleen met `--overschrijf`.
 
 De anon-sleutel is expres publiek en wordt door RLS beschermd; de service-role-sleutel
 van welk project dan ook hoort hier nooit in.
