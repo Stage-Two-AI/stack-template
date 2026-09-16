@@ -6,6 +6,11 @@
 
 <!-- Wat deze app doet, in één zin, vanuit de gebruiker geschreven. -->
 
+<!-- Heeft deze app een database? Noem hier dan het Supabase-project dat de
+     testdatabase is (naam en ref): waar de Vercel-preview naar wijst en waar je
+     lokaal tegenaan mag kijken. Nooit het productieproject. Bijvoorbeeld:
+     - Testdatabase (preview en lokaal kijken): Supabase-project `<naam>-test` (ref `<ref>`). -->
+
 <!-- stack:begin -->
 <!-- Alles hieronder komt uit stack-template en wordt bijgewerkt via een
      stack-sync pull request. Wijzig het niet hier; meld het bij Stage Two. -->
@@ -74,6 +79,8 @@ docs/routes/           de vaste routes, stap voor stap (zie Werkwijzen)
 
 - **Previews gaan via de Vercel-preview van de PR.** Zet geen dev-server op localhost
   op om werk te laten zien. `pnpm dev` weigert om die reden; het is geen storing.
+  Voor jezelf kijken tijdens het bouwen mag wél, expliciet met `STACK_ALLOW_DEV=1`
+  ervoor en nooit tegen productie: volg `docs/routes/lokaal-kijken.md`.
 - **Geen `any`, geen `@ts-ignore`, geen `as unknown as`, geen non-null `!`.** Los de
   echte typefout op. Een groene build met verstopte fouten is erger dan een rode.
 - **Databasetypes komen uit `pnpm db:types`**, nooit met de hand verzonnen. Klaagt
@@ -115,6 +122,8 @@ je begint en loop de stappen in volgorde af, in plaats van te improviseren:
   Dit is de route voor vrijwel elk verzoek, ook een kleinigheid.
 - `docs/routes/databasewijziging.md`: een tabel, kolom of policy erbij of anders
 - `docs/routes/nieuwe-app-aanvragen.md`: een compleet nieuwe applicatie
+- `docs/routes/lokaal-kijken.md`: de app op je eigen computer zien terwijl je bouwt,
+  inclusief wat daarvoor geïnstalleerd moet zijn en welke database je gebruikt
 
 In Claude Code zijn dezelfde routes ook als skill beschikbaar onder dezelfde naam; die
 skills verwijzen naar deze bestanden, er is maar één tekst.

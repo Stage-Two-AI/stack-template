@@ -89,21 +89,15 @@ haast hebt.
 - De afspraken zoals elke assistent ze leest: [`AGENTS.md`](AGENTS.md)
 - De vaste routes, stap voor stap: [`docs/routes/`](docs/routes/)
 
-## Zelf op je computer draaien (optioneel)
+## De app op je eigen computer zien terwijl je bouwt (optioneel)
 
-Alleen nodig als je zonder internet wilt kunnen werken of iets wilt uitproberen zonder
-er een voorstel van te maken. Je hebt [Node](https://nodejs.org),
-[pnpm](https://pnpm.io) en [Docker](https://docs.docker.com/get-started/get-docker/)
-nodig. Lukt het niet in tien minuten, vraag het dan aan Stage Two in plaats van door te
-worstelen.
+Wil je niet op de preview wachten om te zien wat je assistent net gemaakt heeft? Dan
+kan de app op je eigen computer draaien, en ververst de browser bij elke wijziging.
+Vraag je assistent "laat de app lokaal zien" of "controleer of ik lokaal kan kijken";
+de route staat in `docs/routes/lokaal-kijken.md`, inclusief wat er op je computer
+geïnstalleerd moet zijn (git, Node, pnpm) en welke database je daarvoor gebruikt.
 
-```
-pnpm install                  # eenmalig, haalt alles op wat de app nodig heeft
-pnpm db:start                 # start een database op je eigen computer
-pnpm env:local                # zet de instellingen goed
-STACK_ALLOW_DEV=1 pnpm dev    # de app draait nu op http://localhost:5173
-```
-
-Dat `STACK_ALLOW_DEV=1` ervoor is geen vergissing: zonder die variabele weigert `pnpm dev`.
-Dat is zo omdat een adres op je eigen computer nooit de manier is om werk te laten zien;
-daarvoor is de preview-link. Voor jezelf even kijken mag natuurlijk wel.
+Het is een hulpmiddel tijdens het bouwen, niet de manier om werk te laten zien of live
+te zetten: dat blijft de preview-link van het voorstel. Daarom start de app lokaal
+alleen met `STACK_ALLOW_DEV=1` ervoor; zonder die variabele weigert `pnpm dev`, en dat
+is geen storing.
