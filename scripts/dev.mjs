@@ -11,8 +11,10 @@ import { spawnSync } from "node:child_process";
  * de afspraak ook voor een andere agent en voor een mens, zonder dat iemand iets hoeft
  * te installeren. De hook maakt hem alleen eerder merkbaar.
  *
- * Wil je de app toch op je eigen computer bekijken, bijvoorbeeld zonder internet?
- * README.md legt onder "Zelf op je computer draaien" uit hoe.
+ * Voor jezelf kijken mag wél, en dat is een andere situatie: je wilt tijdens het
+ * bouwen zien wat je gemaakt hebt, niet iemand iets laten zien. Dat gaat expliciet,
+ * met STACK_ALLOW_DEV=1 ervoor, zodat het nooit per ongeluk het resultaat wordt.
+ * De route docs/routes/lokaal-kijken.md beschrijft wat je daarvoor nodig hebt.
  */
 if (process.env.STACK_ALLOW_DEV !== "1") {
   console.error(
@@ -25,7 +27,10 @@ if (process.env.STACK_ALLOW_DEV !== "1") {
       "  Zie docs/WERKWIJZE.md, hoofdstuk 5, en de route docs/routes/verder-werken.md.",
       "",
       "  Wil je iets controleren zonder browser? Draai `pnpm test` of `pnpm test:e2e`.",
-      "  Wil je de app op je eigen computer bekijken? Zie README.md, onderaan.",
+      "  Wil je voor jezelf zien wat je gemaakt hebt? Dat mag, expliciet:",
+      "    STACK_ALLOW_DEV=1 pnpm dev",
+      "  Volg dan de route docs/routes/lokaal-kijken.md (wat je nodig hebt, welke",
+      "  database, en waarom dit nooit het opgeleverde resultaat is).",
       "",
     ].join("\n"),
   );

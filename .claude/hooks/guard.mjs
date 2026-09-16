@@ -16,12 +16,18 @@
  * de snelheid waarmee hij hem hoort.
  *
  * Bewust openlaten kan met de omgevingsvariabele STACK_ALLOW_POLICY_EDIT=1,
- * voor wanneer je met opzet aan het vangnet zelf werkt.
+ * voor wanneer je met opzet aan het vangnet zelf werkt. De dev-server heeft zijn
+ * eigen, kleinere ontsnapping: STACK_ALLOW_DEV=1, voor lokaal kijken voor jezelf.
  */
 
 const BASH_RULES = [
   {
     re: /\b(?:pnpm|npm|yarn|bun)\s+(?:run\s+)?dev\b|\bvite\s*$|\bvite\s+(?!build|preview)/,
+    // Lokaal kijken voor jezelf mag, mits expliciet: met STACK_ALLOW_DEV=1 vóór het
+    // commando (of in de omgeving van de sessie). Dezelfde ontsnapping als scripts/dev.mjs,
+    // zodat de hook nooit strenger is dan de kern. Zie docs/routes/lokaal-kijken.md.
+    tenzij: (commando) =>
+      /\bSTACK_ALLOW_DEV=1\b/.test(commando) || process.env.STACK_ALLOW_DEV === "1",
     reason: [
       "Geen dev-server om werk te laten zien.",
       "",
@@ -30,6 +36,8 @@ const BASH_RULES = [
       "Zie docs/WERKWIJZE.md, hoofdstuk Werkafspraken.",
       "",
       "Wil je iets controleren zonder browser? Draai `pnpm test` of `pnpm test:e2e`.",
+      "Wil je voor jezelf zien wat je gemaakt hebt? Dat mag, expliciet:",
+      "`STACK_ALLOW_DEV=1 pnpm dev`. Volg dan de route docs/routes/lokaal-kijken.md.",
     ].join("\n"),
   },
   {
@@ -107,7 +115,9 @@ const input = payload.tool_input ?? {};
 
 if (toolName === "Bash" && typeof input.command === "string") {
   for (const rule of BASH_RULES) {
-    if (rule.re.test(input.command)) deny(rule.reason);
+    if (!rule.re.test(input.command)) continue;
+    if (rule.tenzij?.(input.command)) continue;
+    deny(rule.reason);
   }
 }
 

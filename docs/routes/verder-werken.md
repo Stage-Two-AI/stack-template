@@ -36,6 +36,10 @@ misgaan:
 - Nieuwe tabel? Dan RLS aan én policies én een RLS-test. Volg dan de route
   `docs/routes/databasewijziging.md`.
 
+Wil je tussendoor zien wat je gemaakt hebt, in een browser op je eigen computer? Dat
+kan, langs `docs/routes/lokaal-kijken.md`. Het is een hulpmiddel tijdens het bouwen,
+niet de oplevering: die volgt hieronder.
+
 ## Stap 4: Schrijf de test erbij
 
 Niet achteraf, en niet "later". Bij deze werkwijze zijn de tests de enige verplichte
@@ -77,7 +81,8 @@ link is de enige geldige manier om werk te laten zien. Wacht tot Vercel klaar is
 plak de link erin en **klik hem zelf één keer aan** voordat je iemand vraagt te kijken.
 
 Zet nooit een dev-server op localhost op om iets te tonen. Die kan de klant niet
-openen en hij bewijst niet dat de gebouwde versie werkt.
+openen en hij bewijst niet dat de gebouwde versie werkt. Lokaal kijken voor jezelf
+(`docs/routes/lokaal-kijken.md`) is iets anders dan werk laten zien.
 
 ## Stap 7: Klaar is klaar
 

@@ -278,8 +278,11 @@ tooling afdwingt, niet. Vandaar drie lagen, oplopend in sterkte:
    "klaar is"-definitie, want daar stuurt een model het sterkst op. De vaste routes
    staan uitgeschreven in `docs/routes/`, als gewone tekst, zodat ook een assistent
    zonder skills, of een mens, ze kan volgen.
-2. **De repo zelf** dwingt af, voor iedereen. `pnpm dev` weigert; een PR die aan de
-   poort of de afspraken komt, laat de check `guard:template` rood staan. Voor Claude
+2. **De repo zelf** dwingt af, voor iedereen. `pnpm dev` weigert, tenzij je er
+   expliciet `STACK_ALLOW_DEV=1` voor zet om voor jezelf te kijken (de route
+   `docs/routes/lokaal-kijken.md`); zo is lokaal kijken een bewuste keuze en nooit
+   stilletjes de oplevering. Een PR die aan de poort of de afspraken komt, laat de
+   check `guard:template` rood staan. Voor Claude
    Code komt daar `.claude/` bij: hooks die een tool-aanroep onderscheppen vóór hij
    wordt uitgevoerd en hem blokkeren met uitleg terug aan de agent. Dat is dezelfde
    afspraak, alleen eerder merkbaar: bij de toetsaanslag in plaats van bij de check.

@@ -15,7 +15,7 @@
     "het project. CLAUDE.md is niets dan een import van AGENTS.md en wordt in zijn",
     "geheel vervangen."
   ],
-  "stackVersion": 6,
+  "stackVersion": 7,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",
@@ -25,6 +25,7 @@
       ".claude/skills/verder-werken/SKILL.md",
       ".claude/skills/databasewijziging/SKILL.md",
       ".claude/skills/nieuwe-app-aanvragen/SKILL.md",
+      ".claude/skills/lokaal-kijken/SKILL.md",
       "CLAUDE.md",
       ".github/workflows/ci.yml",
       ".github/workflows/deploy-db.yml",
@@ -47,6 +48,7 @@
       "docs/routes/verder-werken.md",
       "docs/routes/databasewijziging.md",
       "docs/routes/nieuwe-app-aanvragen.md",
+      "docs/routes/lokaal-kijken.md",
       "biome.json"
     ],
     "sleutelsSamenvoegen": {
