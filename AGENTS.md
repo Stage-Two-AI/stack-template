@@ -6,10 +6,10 @@
 
 <!-- Wat deze app doet, in één zin, vanuit de gebruiker geschreven. -->
 
-<!-- Heeft deze app een database? Noem hier dan het Supabase-project dat de
-     testdatabase is (naam en ref): waar de Vercel-preview naar wijst en waar je
-     lokaal tegenaan mag kijken. Nooit het productieproject. Bijvoorbeeld:
-     - Testdatabase (preview en lokaal kijken): Supabase-project `<naam>-test` (ref `<ref>`). -->
+<!-- Heeft deze app een database? Dan staat de testdatabase (het Supabase-project
+     waar de preview naar wijst en waar je lokaal tegenaan mag kijken) in
+     stack.config.json onder `testdatabase`. Noem hier eventueel de naam van dat
+     project en van het productieproject, zodat niemand ze verwart. -->
 
 <!-- stack:begin -->
 <!-- Alles hieronder komt uit stack-template en wordt bijgewerkt via een
@@ -47,6 +47,11 @@ migratie die hier terechtkomt.
 Zet de stand niet op eigen houtje om; `docs/WERKWIJZE.md` beschrijft wanneer welke stand
 geldt en wat er dan moet gebeuren.
 
+**Een app met database heeft een testdatabase** (`testdatabase` in `stack.config.json`):
+een tweede Supabase-project waar de Vercel-preview en lokaal kijken naar wijzen, en waar
+migraties bij een merge als eerste op draaien. Productie raak je vanaf een preview of je
+eigen computer dus nooit. Zet nooit de sleutels van productie in `.env.local`.
+
 ## Commando's
 
 | Commando | Wat het doet |
@@ -56,6 +61,7 @@ geldt en wat er dan moet gebeuren.
 | `pnpm test` | unittests |
 | `pnpm db:start` | lokale Supabase starten (eerste keer duurt even) |
 | `pnpm env:local` | `.env.local` en `.env.test` schrijven op basis van die database |
+| `pnpm env:test` | `.env.local` laten wijzen naar de testdatabase van de app (geen Docker nodig) |
 | `pnpm db:reset` | lokale database opnieuw opbouwen uit alle migraties |
 | `pnpm db:types` | databasetypes genereren na een migratie |
 | `pnpm test:rls` | beveiligingstests (database moet draaien) |

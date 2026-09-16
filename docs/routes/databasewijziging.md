@@ -126,8 +126,12 @@ Bevestigd: destructieve migratie
 
 ## Wat er gebeurt na de merge
 
-1. Actions past de migratie toe op de database.
-2. Vercel zet de nieuwe versie neer.
+1. Actions past de migratie eerst toe op de **testdatabase** (als die in
+   `stack.config.json` staat). Faalt het daar, dan stopt het hier en blijft productie
+   onaangeroerd. Lees dan de log van de workflow "Database bijwerken" en repareer met
+   een nieuwe migratie.
+2. Daarna dezelfde migratie op **productie**.
+3. Vercel zet de nieuwe versie neer.
 
 Migraties draaien **alleen bij een merge naar `main`**, nooit op een PR. Een PR mag
 de database van niemand aanraken.

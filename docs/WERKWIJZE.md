@@ -158,6 +158,41 @@ uit beide in één opvraging kunnen combineren. Is het antwoord op allebei ja, d
 dezelfde database. Anders een eigen. Volg de route `docs/routes/nieuwe-app-aanvragen.md`; die stelt de
 vraag in gewone taal.
 
+### De testdatabase: preview en lokaal kijken raken nooit productie
+
+Een app met een database krijgt er bij het opzetten standaard een tweede Supabase-project
+naast: de **testdatabase**. Zelfde schema, andere gegevens (verzonnen, of een oude kopie),
+los van productie. Alleen voor apps die echt met Supabase praten; een app zonder database
+heeft er niets aan, en een app op een gedeelde database gebruikt de testdatabase van de
+eigenaar.
+
+Wat erop draait:
+
+- **De Vercel-preview van elke pull request.** Klikken, opslaan, verwijderen in een preview
+  raakt nooit echte gegevens. Vercel krijgt op de Preview-omgeving de URL en de anon key van
+  het testproject, en `VITE_OMGEVING=test`; de app laat dan een balk zien dat dit de
+  testomgeving is. Productie op `main` krijgt het productieproject en geen balk.
+- **Lokaal kijken op je eigen computer**, zonder Docker: `pnpm env:test` (route
+  `docs/routes/lokaal-kijken.md`, variant B).
+- **Migraties, als eerste.** Bij een merge past Actions de migraties eerst toe op de
+  testdatabase (de canary) en pas daarna op productie. Faalt het op de testdatabase, dan
+  blijft productie zoals hij was.
+
+In `stack.config.json` staat welk project het is; het databasewachtwoord ervan is het
+Actions-secret `SUPABASE_TEST_DB_PASSWORD`:
+
+```json
+{
+  "database": true,
+  "testdatabase": { "project_ref": "abcdefghijklmnopqrst" }
+}
+```
+
+Ontbreekt het blok, dan is er geen testdatabase: de preview gebruikt wat er in Vercel
+staat ingesteld en migraties gaan rechtstreeks naar productie. Dat is toegestaan, maar het
+is de uitzondering en niet de standaard. Wat de testdatabase kost: een tweede project bij
+Supabase, dat je kunt pauzeren als er een tijd niet gebouwd wordt.
+
 ### Als er wel een database is
 
 Het doel: je kunt het databaseschema wijzigen **zonder toegang tot de
@@ -167,7 +202,7 @@ Supabase-console**. Dat werkt via migraties plus een deploy-stap.
 2. Pull request openen. De CI draait: types opnieuw genereren, typecontrole, tests,
    RLS-check, destructie-check.
 3. Mergen naar `main`.
-4. Actions past de migratie toe op de database.
+4. Actions past de migratie toe: eerst op de testdatabase (als die er is), dan op productie.
 5. Vercel zet de nieuwe versie neer.
 
 Regels die hierbij horen en niet vrijblijvend zijn:
