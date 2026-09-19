@@ -95,7 +95,8 @@ De app draait nu op http://localhost:5173 en ververst vanzelf bij elke wijziging
 die je assistent maakt. Stoppen: `Ctrl+C` in het venster waar hij draait.
 
 Dat `STACK_ALLOW_DEV=1` ervoor is geen vergissing en geen omweg: zonder die variabele
-weigert `pnpm dev`, en in Claude Code houdt de hook het commando tegen. Zo blijft
+weigert `pnpm dev`, en in Claude Code houdt de hook van de Stage Two-plugin het
+commando tegen. Zo blijft
 lokaal kijken een bewuste keuze van jou en wordt het nooit stilletjes de manier waarop
 een assistent werk "oplevert".
 
