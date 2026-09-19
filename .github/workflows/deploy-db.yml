@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Uitchecken gebeurt altijd, want de eerste vraag hieronder staat in de repo.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Alleen de repo die de database BEZIT mag migraties toepassen. Een app die de
       # database van een ander gebruikt ("gedeeld") komt hier nooit voorbij: twee
