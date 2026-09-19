@@ -2,7 +2,8 @@
 
 <!-- Dit bestand bevat bewust niets anders dan die import. De afspraken staan in
      AGENTS.md, zodat elke agent dezelfde tekst leest; Claude Code leest dat bestand
-     via deze regel. Wat Claude Code daarbovenop krijgt (hooks, skills) staat in
-     .claude/ en mag nooit een afspraak bevatten die niet in AGENTS.md staat.
-     Dit bestand komt uit stack-template en wordt in zijn geheel vervangen door de
-     stack-sync; projectgegevens horen bovenaan AGENTS.md. -->
+     via deze regel. Wat Claude Code daarbovenop krijgt (de hook en de skills) zit in
+     de Stage Two-plugin, die .claude/settings.json aankondigt, en mag nooit een
+     afspraak bevatten die niet in AGENTS.md staat. Dit bestand komt uit stack-template
+     en wordt in zijn geheel vervangen bij /stack:bijwerken; projectgegevens horen
+     bovenaan AGENTS.md. -->

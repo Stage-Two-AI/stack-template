@@ -1,7 +1,7 @@
 # Werkwijze
 
-*Hoort bij de Stage Two-stack, versie 6. Dit bestand komt uit de gedeelde template en
-wordt bijgewerkt via een stack-sync pull request; wijzig het niet per project.*
+*Hoort bij de Stage Two-stack, versie 9. Dit bestand komt uit de gedeelde template en
+wordt bijgewerkt met `/stack:bijwerken`, als pull request; wijzig het niet per project.*
 
 Dit legt uit hóé er in dit project gewerkt wordt en vooral **waarom**. De korte,
 gebiedende versie voor dagelijks gebruik staat in `AGENTS.md`; dit is de achtergrond
@@ -318,11 +318,14 @@ tooling afdwingt, niet. Vandaar drie lagen, oplopend in sterkte:
    `docs/routes/lokaal-kijken.md`); zo is lokaal kijken een bewuste keuze en nooit
    stilletjes de oplevering. Een PR die aan de poort of de afspraken komt, laat de
    check `guard:template` rood staan. Voor Claude
-   Code komt daar `.claude/` bij: hooks die een tool-aanroep onderscheppen vóór hij
-   wordt uitgevoerd en hem blokkeren met uitleg terug aan de agent. Dat is dezelfde
-   afspraak, alleen eerder merkbaar: bij de toetsaanslag in plaats van bij de check.
-   Een aansluiting voor een agent mag nooit een afspraak bevatten die niet in
-   `AGENTS.md` staat; zo betekent "klaar" voor elke agent hetzelfde.
+   Code komt daar de Stage Two-plugin bij (`.claude/settings.json` kondigt hem aan,
+   Claude Code biedt de installatie zelf aan): een hook die een tool-aanroep
+   onderschept vóór hij wordt uitgevoerd en hem blokkeert met uitleg terug aan de
+   agent, de routes als skills, en `/stack:bijwerken` om een nieuwere template op te
+   halen. Dat is dezelfde afspraak, alleen eerder merkbaar: bij de toetsaanslag in
+   plaats van bij de check. Een aansluiting voor een agent mag nooit een afspraak
+   bevatten die niet in `AGENTS.md` staat; zo betekent "klaar" voor elke agent
+   hetzelfde. Zonder de plugin blijft de check de grens: minder snel, even hard.
 3. **CI en branch protection** is de bodem. Ook als een agent élke afspraak negeert,
    komt er niets in `main` zonder groene checks.
 

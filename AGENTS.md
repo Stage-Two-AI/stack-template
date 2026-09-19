@@ -1,7 +1,7 @@
 # <projectnaam>
 
 <!-- Vervang <projectnaam> en de regel hieronder bij het opzetten van een project.
-     Alles boven de markering hoort bij dít project en wordt door de stack-sync
+     Alles boven de markering hoort bij dít project en wordt bij /stack:bijwerken
      nooit overschreven. -->
 
 <!-- Wat deze app doet, in één zin, vanuit de gebruiker geschreven. -->
@@ -12,8 +12,8 @@
      project en van het productieproject, zodat niemand ze verwart. -->
 
 <!-- stack:begin -->
-<!-- Alles hieronder komt uit stack-template en wordt bijgewerkt via een
-     stack-sync pull request. Wijzig het niet hier; meld het bij Stage Two. -->
+<!-- Alles hieronder komt uit stack-template en wordt bijgewerkt met
+     /stack:bijwerken, als pull request. Wijzig het niet hier; meld het bij Stage Two. -->
 
 Dit bestand geldt voor **elke** agent die in deze repo werkt: Claude Code, Codex, Cursor,
 Copilot of een mens zonder agent. Er is geen tweede set afspraken ergens anders.
@@ -79,6 +79,7 @@ tests/rls/             beveiligingstests
 e2e/                   end-to-end tests
 scripts/               de guards uit de kwaliteitspoort
 docs/routes/           de vaste routes, stap voor stap (zie Werkwijzen)
+docs/solutions/        gedocumenteerde oplossingen van eerdere problemen (bugs, werkwijzen, patronen), per categorie, met YAML-frontmatter (module, tags, problem_type)
 ```
 
 ## Regels
@@ -118,6 +119,8 @@ docs/routes/           de vaste routes, stap voor stap (zie Werkwijzen)
   pas lopen met de werkelijkheid.
 - **Migraties zijn aanvullend.** Voeg een kolom toe in de ene PR en gebruik hem in de
   volgende; gooi een kolom pas weg als niets hem meer aanroept.
+- After a solved, verified problem, offer once to invoke the `ce-compound` skill at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not offer. Completion, effort, and diff size alone are not enough. Offer at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
+- Write every report, summary, or handoff to the user through the `ce-noslop` skill. This applies when you are the top-level agent writing to the user, not when you are a subagent reporting to its caller. Do not apply it to code, config, verbatim quotes, or text the user asked to post as written.
 
 ## Werkwijzen
 
@@ -131,16 +134,18 @@ je begint en loop de stappen in volgorde af, in plaats van te improviseren:
 - `docs/routes/lokaal-kijken.md`: de app op je eigen computer zien terwijl je bouwt,
   inclusief wat daarvoor geïnstalleerd moet zijn en welke database je gebruikt
 
-In Claude Code zijn dezelfde routes ook als skill beschikbaar onder dezelfde naam; die
-skills verwijzen naar deze bestanden, er is maar één tekst.
+In Claude Code zijn dezelfde routes ook als skill beschikbaar via de Stage Two-plugin
+(`/stack:verder-werken` en zo verder); die skills verwijzen naar deze bestanden, er is
+maar één tekst. Diezelfde plugin heeft `/stack:bijwerken`: daarmee haalt de gebruiker
+een nieuwere versie van de gedeelde template op, als pull request van hemzelf.
 
 ## Wat je niet aanpast
 
 `.github/workflows/`, `.claude/`, `scripts/`, `docs/WERKWIJZE.md`, `docs/routes/` en dit
-bestand onder de markering komen uit de gedeelde template en worden bijgewerkt via een
-stack-sync pull request. De check `guard:template` laat een PR die eraan komt rood staan;
-in Claude Code houdt een hook de wijziging al bij de toetsaanslag tegen. Klopt er iets
-niet, meld het dan bij Stage Two: dan krijgt elk project de verbetering, in plaats van
-dit project alleen.
+bestand onder de markering komen uit de gedeelde template en worden bijgewerkt met
+`/stack:bijwerken`, als pull request. De check `guard:template` laat een PR die eraan
+komt rood staan; in Claude Code houdt de hook van de Stage Two-plugin de wijziging al
+bij de toetsaanslag tegen. Klopt er iets niet, meld het dan bij Stage Two: dan krijgt
+elk project de verbetering, in plaats van dit project alleen.
 
 <!-- stack:end -->

@@ -1,31 +1,33 @@
 {
   "$beschrijving": [
     "Welke bestanden van de gedeelde template zijn en welke van dit project.",
-    "De stack-sync gebruikt dit om alleen de template-bestanden bij te werken,",
-    "zonder ooit aan het werk van de klant te komen.",
+    "De skill /stack:bijwerken (Stage Two-plugin) en de beheerde run van Stage Two",
+    "gebruiken dit om alleen de template-bestanden bij te werken, zonder ooit aan het",
+    "werk van de klant te komen.",
     "",
     "Dit werkt omdat niemand deze paden per project aanpast, en dat wordt op drie",
     "manieren bewaakt: de check guard:template laat een PR die eraan komt rood staan",
-    "(voor elke agent en elk mens), de hook in .claude/settings.json houdt Claude Code",
-    "al bij de toetsaanslag tegen, en de sync zet een afwijking elk uur terug. Wat",
-    "niemand lokaal aanpast, kun je veilig in zijn geheel vervangen.",
+    "(voor elke agent en elk mens), de hook van de Stage Two-plugin houdt Claude Code al",
+    "bij de toetsaanslag tegen, en een afwijking wordt bij de volgende update gemeld.",
+    "Wat niemand lokaal aanpast, kun je veilig in zijn geheel vervangen.",
     "",
     "AGENTS.md is de kern: de afspraken voor elke agent. Alleen het deel tussen de",
     "markeringen is van de template; de projectnaam en omschrijving erboven zijn van",
     "het project. CLAUDE.md is niets dan een import van AGENTS.md en wordt in zijn",
-    "geheel vervangen."
+    "geheel vervangen. .github/CODEOWNERS is van het project (het opzetscript vult het",
+    "in), maar de plugin-hook beschermt het wel: het bepaalt wie een melding krijgt.",
+    "",
+    "manifestFormaat zegt welke vorm dit bestand heeft; een oudere plugin stopt bij een",
+    "nieuwer formaat in plaats van half werk te doen."
   ],
-  "stackVersion": 8,
+  "manifestFormaat": 1,
+  "stackVersion": 9,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",
       ".claude/settings.json",
       ".claude/stack-manifest.json",
       ".claude/stack-version",
-      ".claude/skills/verder-werken/SKILL.md",
-      ".claude/skills/databasewijziging/SKILL.md",
-      ".claude/skills/nieuwe-app-aanvragen/SKILL.md",
-      ".claude/skills/lokaal-kijken/SKILL.md",
       "CLAUDE.md",
       ".github/workflows/ci.yml",
       ".github/workflows/deploy-db.yml",
@@ -53,7 +55,7 @@
       "biome.json"
     ],
     "sleutelsSamenvoegen": {
-      "package.json": ["scripts"]
+      "package.json": ["scripts", "devDependencies"]
     },
     "tussenMarkeringen": {
       "AGENTS.md": "stack"

@@ -88,6 +88,18 @@ haast hebt.
 - De volledige werkwijze en het waarom van elke keuze: [`docs/WERKWIJZE.md`](docs/WERKWIJZE.md)
 - De afspraken zoals elke assistent ze leest: [`AGENTS.md`](AGENTS.md)
 - De vaste routes, stap voor stap: [`docs/routes/`](docs/routes/)
+- Waar deze werkplaats vandaan komt: de sectie hieronder.
+
+## Waar deze werkplaats vandaan komt
+
+Deze app is begonnen uit de **stack-template** van Stage Two:
+[github.com/Stage-Two-AI/stack-template](https://github.com/Stage-Two-AI/stack-template).
+Die template is openbaar. Dat is een bewuste keuze: zo kan elke klant er zonder
+toestemming of sleutel van Stage Two nieuwe apps van maken en verbeteringen uit ophalen,
+ook lang nadat Stage Two vertrokken is. De template bevat alleen de bouwstenen en de
+afspraken; er staan geen geheimen, sleutels of klantgegevens in, en de checks die hier
+draaien lezen hun secrets uit je eigen organisatie. Onder welke voorwaarden je de
+template mag gebruiken staat in het bestand `LICENSE` in die repository.
 
 ## De app op je eigen computer zien terwijl je bouwt (optioneel)
 
