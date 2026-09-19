@@ -26,7 +26,7 @@ jobs:
       # De guards lezen de PR-tekst voor hun expliciete bevestigingsregels.
       PR_BODY: ${{ github.event.pull_request.body }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           # Volledige historie: de guards vergelijken met de basisbranch.
           fetch-depth: 0
@@ -89,7 +89,7 @@ jobs:
     name: Database en end-to-end
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v4
 
