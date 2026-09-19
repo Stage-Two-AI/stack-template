@@ -16,3 +16,6 @@ blob-report/
 # Editors / OS
 .DS_Store
 *.log
+
+# Compound Engineering: tijdelijke werkbestanden van skills
+.context/compound-engineering/

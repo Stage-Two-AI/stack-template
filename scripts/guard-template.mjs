@@ -12,23 +12,24 @@ import {
 /**
  * De bestanden van de gedeelde template worden niet per project gewijzigd.
  *
- * Waarom dit een check is en niet alleen een hook: de hook in .claude/ werkt alleen in
- * Claude Code. Een andere agent, of een mens in een editor, kan ci.yml of een guard
- * aanpassen, en op een pull request draait GitHub de workflow van de branch zelf. De
- * stack-sync zet het elk uur terug, maar binnen dat uur kan een verzwakte poort mergen.
- * Deze check maakt dat zichtbaar vóór de merge, voor elke agent, en lokaal via
- * `pnpm check` al vóór de push.
+ * Waarom dit een check is en niet alleen een hook: de hook van de Stage Two-plugin
+ * werkt alleen in Claude Code, en alleen als de plugin geïnstalleerd is. Een andere
+ * agent, of een mens in een editor, kan ci.yml of een guard aanpassen, en op een pull
+ * request draait GitHub de workflow van de branch zelf. Deze check maakt dat zichtbaar
+ * vóór de merge, voor elke agent, en lokaal via `pnpm check` al vóór de push. Dit is
+ * de harde grens; de plugin maakt hem alleen eerder merkbaar.
  *
  * Wat "van de template" is staat in .claude/stack-manifest.json, dezelfde lijst die
- * de sync gebruikt. Bij AGENTS.md telt alleen het deel tussen de markeringen: alles
- * erboven is van het project.
+ * /stack:bijwerken gebruikt. Bij AGENTS.md telt alleen het deel tussen de markeringen:
+ * alles erboven is van het project.
  *
  * Ontsnappingsluik, expres zichtbaar: de regel `Bevestigd: templatebestanden gewijzigd`
- * in de PR-tekst. De stack-sync zet die regel zelf in zijn pull requests.
+ * in de PR-tekst. /stack:bijwerken zet die regel zelf in zijn pull requests.
  *
  * Wat deze check niet kan: zichzelf beschermen. Wie ci.yml wijzigt kan deze stap
- * weghalen. Dat staat zo in de PR-diff, de klant leest die vóór de merge, en de sync
- * herstelt het daarna. Het doel is de improviserende agent, niet de kwaadwillende mens.
+ * weghalen. Dat staat zo in de PR-diff, de klant leest die vóór de merge, en de
+ * volgende /stack:bijwerken meldt de afwijking. Het doel is de improviserende agent,
+ * niet de kwaadwillende mens.
  */
 const BEVESTIGING = /^\s*Bevestigd:\s*templatebestanden gewijzigd\s*$/im;
 
@@ -86,7 +87,7 @@ for (const file of files) {
   const naam = markeringen[file];
   if (!naam) continue;
   const oud = opBasis(file);
-  if (oud === null) continue; // nieuw bestand: dat regelt de sync of het opzetscript
+  if (oud === null) continue; // nieuw bestand: dat regelt /stack:bijwerken of het opzetscript
   const nu = readFileSync(file, "utf8");
   const oudDeel = gemarkeerdDeel(oud, naam);
   const nuDeel = gemarkeerdDeel(nu, naam);
@@ -102,10 +103,10 @@ if (bevestigd) pass(`templatebestanden gewijzigd met expliciete bevestiging (${g
 fail("Deze PR wijzigt bestanden die van de gedeelde template zijn.", [
   ...geraakt.map((file) => `- ${file}`),
   "",
-  "Die bestanden komen uit stack-template en worden per project niet gewijzigd: de",
-  "stack-sync brengt verbeteringen als pull request naar élk project, en zet een lokale",
-  "afwijking bij de volgende ronde terug. Wat je hier verandert, is dus binnen een uur",
-  "weer weg, en tot die tijd heeft dit project andere afspraken dan de rest.",
+  "Die bestanden komen uit stack-template en worden per project niet gewijzigd:",
+  "/stack:bijwerken brengt verbeteringen als pull request naar élk project, en meldt",
+  "een lokale afwijking bij de volgende update. Wat je hier verandert, geeft dit project",
+  "andere afspraken dan de rest, en het komt bij elke update opnieuw ter sprake.",
   "",
   "Doe één van beide:",
   "  1. Draai de wijziging terug en meld bij Stage Two wat er niet klopt (voorkeur):",
