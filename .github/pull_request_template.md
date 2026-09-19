@@ -35,7 +35,8 @@ Vercel-preview:
 
 <!-- Raakt deze PR bestanden van de gedeelde template (.github/workflows, scripts,
      .claude, docs/routes, docs/WERKWIJZE.md, AGENTS.md onder de markering)? Die worden
-     per project niet gewijzigd; meld het liever bij Stage Two. Is het echt bewust,
-     haal dan de commentaartekens weg. De check `guard:template` blokkeert de PR anders. -->
+     per project niet gewijzigd; een nieuwere template haal je op met /stack:bijwerken,
+     en anders meld je het bij Stage Two. Is het echt bewust, haal dan de
+     commentaartekens weg. De check `guard:template` blokkeert de PR anders. -->
 
 <!-- Bevestigd: templatebestanden gewijzigd -->

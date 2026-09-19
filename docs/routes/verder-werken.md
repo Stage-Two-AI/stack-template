@@ -106,7 +106,7 @@ meld dan wat er nog mist.
 | `guard:secrets` | er staat mogelijk een sleutel in de code of in de bundel. **Altijd zelf naar kijken**, dit is de gevaarlijkste |
 | `guard:rls` | er is een tabel zonder beveiliging |
 | `guard:migrations` | je migratie kan data vernietigen; lees de melding en bevestig bewust |
-| `guard:template` | je wijzigde een bestand van de gedeelde template. Draai het terug en meld het bij Stage Two |
+| `guard:template` | je wijzigde een bestand van de gedeelde template. Draai het terug en meld het bij Stage Two; wil je de nieuwste versie van de template, dan is dat `/stack:bijwerken` |
 | `db:types:check` | de gegenereerde types lopen achter. `pnpm db:types` en committen |
 
 Een rode check omzeilen door hem uit te zetten is nooit het antwoord. De check is
