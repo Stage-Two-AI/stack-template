@@ -7,9 +7,9 @@ import { spawnSync } from "node:child_process";
  * die de klant kan openen, en het is wat er ook echt live gaat. Een dev-server op
  * localhost bewijst niets over de gebouwde versie en kan niemand anders zien.
  *
- * Dit staat hier, op scriptniveau, en niet alleen in de hook van Claude Code: zo geldt
- * de afspraak ook voor een andere agent en voor een mens, zonder dat iemand iets hoeft
- * te installeren. De hook maakt hem alleen eerder merkbaar.
+ * Dit staat hier, op scriptniveau, en niet alleen in de hook van de Stage Two-plugin
+ * voor Claude Code: zo geldt de afspraak ook voor een andere agent en voor een mens,
+ * zonder dat iemand iets hoeft te installeren. De hook maakt hem alleen eerder merkbaar.
  *
  * Voor jezelf kijken mag wél, en dat is een andere situatie: je wilt tijdens het
  * bouwen zien wat je gemaakt hebt, niet iemand iets laten zien. Dat gaat expliciet,
