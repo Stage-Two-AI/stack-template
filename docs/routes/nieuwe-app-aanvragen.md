@@ -61,9 +61,11 @@ neemt daarna contact op om de aanvraag door te nemen.
 
 ## Wat er daarna gebeurt
 
-Stage Two zet de omgeving op: repo, de juiste databasestand (eigen of gedeeld), hosting,
-foutbewaking, de kwaliteitspoort en de afspraken. Dat duurt kort. Je krijgt een repo terug die al
-goed staat, met dezelfde werkwijze als deze, zodat je er meteen in kunt.
+Stage Two zet de omgeving op: een nieuwe repo als kopie van de openbare stack-template
+(github.com/Stage-Two-AI/stack-template), de juiste databasestand (eigen of gedeeld),
+hosting, foutbewaking, de kwaliteitspoort, de afspraken en de Stage Two-plugin voor
+Claude Code. Dat duurt kort. Je krijgt een repo terug die al goed staat, met dezelfde
+werkwijze als deze, zodat je er meteen in kunt.
 
 Begin dus **niet** alvast zelf met bouwen in een losse map: dat werk kan niet
 overgezet worden naar de nieuwe omgeving zonder alles opnieuw te doen.

@@ -1,17 +1,13 @@
 {
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash|Write|Edit|NotebookEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .claude/hooks/guard.mjs",
-            "timeout": 10,
-            "statusMessage": "Afspraken controleren…"
-          }
-        ]
+  "extraKnownMarketplaces": {
+    "stagetwo": {
+      "source": {
+        "source": "github",
+        "repo": "Stage-Two-AI/stack-plugin"
       }
-    ]
+    }
+  },
+  "enabledPlugins": {
+    "stack@stagetwo": true
   }
 }
