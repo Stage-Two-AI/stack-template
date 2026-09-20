@@ -32,6 +32,15 @@ het overzicht". De vaste route staat in `docs/routes/verder-werken.md`; je assis
 hoort die zelf te pakken. Doet hij dat niet, zeg dan: "volg de route in
 docs/routes/verder-werken.md".
 
+**Werk je met Claude Code?** Dan vraagt Claude Code bij het openen van deze map of je de
+Stage Two-plugin wilt installeren. Zeg ja. Die plugin geeft je assistent de vaste routes
+als commando's (`/stack:verder-werken` en zo verder), houdt hem tegen als hij aan de
+gedeelde werkwijze wil zitten, en meldt het als er een nieuwere versie van die werkwijze
+is; ophalen doe je dan zelf met `/stack:bijwerken`. Wat de plugin precies doet en hoe je
+hem installeert staat op [github.com/Stage-Two-AI/stack-plugin](https://github.com/Stage-Two-AI/stack-plugin).
+Werk je met een andere assistent, dan mis je alleen die gemakken: de afspraken en de
+controles gelden voor iedereen.
+
 ## Hoe een wijziging live komt
 
 Altijd via dezelfde vijf stappen. Ook voor een komma, en ook als Stage Two het doet.
@@ -100,6 +109,13 @@ ook lang nadat Stage Two vertrokken is. De template bevat alleen de bouwstenen e
 afspraken; er staan geen geheimen, sleutels of klantgegevens in, en de checks die hier
 draaien lezen hun secrets uit je eigen organisatie. Onder welke voorwaarden je de
 template mag gebruiken staat in het bestand `LICENSE` in die repository.
+
+Verbetert Stage Two de werkwijze, dan krijgt deze app dat als versie erbij: een deel van
+de bestanden hier (de controles, de afspraken, de routes) komt uit de template en wordt
+in zijn geheel vervangen; alles wat van dit project is, blijft staan. Wat waarvan is,
+staat in `.claude/stack-manifest.json`. Ophalen doe je zelf, wanneer jij wilt, met
+`/stack:bijwerken` uit de Stage Two-plugin; het komt als pull request die jij bekijkt en
+goedkeurt. De versie waar deze app op staat, staat in `.claude/stack-version`.
 
 ## De app op je eigen computer zien terwijl je bouwt (optioneel)
 
