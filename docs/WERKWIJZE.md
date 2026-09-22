@@ -1,6 +1,6 @@
 # Werkwijze
 
-*Hoort bij de Stage Two-stack, versie 10. Dit bestand komt uit de gedeelde template en
+*Hoort bij de Stage Two-stack, versie 11. Dit bestand komt uit de gedeelde template en
 wordt bijgewerkt met `/stack:bijwerken`, als pull request; wijzig het niet per project.*
 
 Dit legt uit hóé er in dit project gewerkt wordt en vooral **waarom**. De korte,
