@@ -1,71 +1,66 @@
-# Een nieuwe app aanvragen
+# Een nieuwe app beginnen
 
-Deze repo is één app. Een **nieuwe** app krijgt een eigen repo en een eigen omgeving, en
-die worden door Stage Two opgezet. Dat is geen formaliteit: de accounts komen op naam van
-de klant te staan, de beveiligingsregels moeten kloppen vanaf dag één, en dat is werk dat
-je niet vanuit een bestaande repo kunt doen.
+Deze repo is één app. Een **nieuwe** app krijgt een eigen repo, en die begin je zelf,
+met de Stage Two-plugin in Claude Code: typ `/stack:nieuwe-app` in een lege map. Die
+route denkt eerst met je mee (is het wel een nieuwe app, wat moet hij doen, heeft hij een
+database nodig) en maakt de app daarna aan uit de nieuwste template, onder het
+GitHub-account van je bedrijf. Je hoeft er Stage Two niet voor te mailen.
 
-Of die nieuwe app ook een **eigen database** krijgt, of de gegevens van een bestaande app
-gebruikt, beslist Stage Two aan de hand van de antwoorden hieronder. Vraag 2 en 5 gaan
-daarover. Je hoeft die afweging niet zelf te maken, je hoeft hem alleen te beantwoorden.
-
-Wat je hier wél doet: het idee scherp krijgen en er een complete aanvraag van maken.
-Dat scheelt een gespreksronde en meestal een week.
+Eén uitzondering: het **allereerste** project. Dan staan de accounts van het bedrijf
+(GitHub, hosting, database) nog niet, en die richt Stage Two in. Daarna kun je zelf
+verder, ook als Stage Two er niet meer bij is.
 
 ## Eerst: is het wel een nieuwe app?
 
-Ga dit langs voordat je verdergaat.
+De regel is simpel: **één app per verzameling gegevens.** Gegevens die op twee plekken
+staan gaan uit elkaar lopen, en een app die de gegevens van een andere app gebruikt is
+voor iedereen moeilijker te overzien.
 
-| Signaal | Waarschijnlijk |
+| Wat je wilt | Wat het is |
 |---|---|
-| Dezelfde mensen, dezelfde gegevens, een scherm erbij | **uitbreiding** van deze app |
-| Dezelfde mensen en gegevens, maar echt een eigen werktuig | nieuwe app op de bestaande gegevens |
-| Andere gebruikers, of gegevens die niets met elkaar te maken hebben | nieuwe app met eigen gegevens |
-| Moet vindbaar zijn in Google | nieuwe app (publieke site, ander framework) |
-| "Kan dit er ook nog bij?" | vaak uitbreiding |
+| Iets over gegevens die al in een app van het bedrijf zitten (dezelfde planten, orders, voorraad, klanten) | **uitbreiding** van die app |
+| Een scherm, overzicht of werktuig erbij voor dezelfde mensen | **uitbreiding** van die app |
+| Andere gebruikers, of gegevens die niets met elkaar te maken hebben | **nieuwe app** |
+| Moet vindbaar zijn in Google | een website, geen app uit deze template; vraag Stage Two |
+| "Kan dit er ook nog bij?" | vaak een uitbreiding |
 
-Is het een uitbreiding? Volg dan de route `docs/routes/verder-werken.md` en stop hier.
+Is het een uitbreiding? Volg dan `docs/routes/verder-werken.md` in de map van die app.
 
-## De aanvraag
+Wil je toch een aparte app op de gegevens van een bestaande app, bijvoorbeeld een portaal
+voor mensen van buiten? Dat kan, maar dat is een keuze met een eigen beveiligingsopzet.
+Die maakt Stage Two samen met je.
 
-Werk deze punten samen met de aanvrager uit. Vraag door tot elk punt een concreet
-antwoord heeft; "dat zien we later wel" is het duurste antwoord in dit lijstje.
+## Wat je vooraf scherp hebt
 
-1. **Wat kan iemand straks dat nu niet kan?** Eén zin, in gewone taal, vanuit de
-   gebruiker geschreven.
-2. **Wie gaat het gebruiken?** Aantal mensen, en of het personeel is of ook mensen
-   van buiten. Dit bepaalt de hele beveiligingsopzet.
-3. **Moet het vindbaar zijn in Google of in een linkpreview?** Dit bepaalt de
-   frameworkkeuze en is achteraf duur om te wijzigen.
-4. **Welke gegevens gaan erin?** En specifiek: staan er persoonsgegevens in, of
-   gegevens van klanten van de klant?
-5. **Gaat deze app over gegevens die er al zijn?** Dus: over dezelfde planten, orders,
-   voorraad, klanten of projecten waar een bestaande app al over gaat? Noem die app bij
-   naam. Antwoord je hier ja, dan krijgt de nieuwe app **geen eigen database**: ze gebruikt
-   die van de bestaande app. Dat is goedkoper, en belangrijker: het voorkomt dat dezelfde
-   voorraad op twee plekken staat en uit elkaar gaat lopen.
-6. **Moet het koppelen met iets bestaands buiten de eigen apps?** Boekhouding, CRM, een
-   machine, een webshop. Noem het systeem bij naam.
-7. **Wat is de eerste versie waar iemand echt iets aan heeft?** Niet de eindversie:
-   het kleinste ding dat op maandag al gebruikt zou worden.
-8. **Wanneer is het nodig, en waarom dan?** Een echte aanleiding (een seizoen, een
-   verhuizing, een audit) is bruikbaarder dan een datum.
+Hoe concreter je dit hebt, hoe beter de eerste versie wordt. "Dat zien we later wel" is
+het duurste antwoord.
 
-## De aanvraag indienen
+1. **Wat kan iemand straks dat nu niet kan?** Eén zin, vanuit de gebruiker geschreven.
+2. **Wie gaat het gebruiken?** Hoeveel mensen, eigen personeel of ook mensen van buiten.
+3. **Welke gegevens gaan erin?** En of daar persoonsgegevens bij zitten.
+4. **Wat is de eerste versie waar iemand echt iets aan heeft?** Het kleinste ding dat
+   maandag al gebruikt zou worden.
 
-Vat het samen in bovenstaande acht kopjes, schrijf het naar een bestand, en mail dat
-naar **info@stagetwo.nl** met als onderwerp "Nieuwe app: <korte naam>".
+## De database: twee standen
 
-Zet in de mail ook wie de contactpersoon is en wanneer je het nodig hebt. Stage Two
-neemt daarna contact op om de aanvraag door te nemen.
+- **Geen database.** De app draait alleen op de hosting. Kost niets extra. Past bij een
+  rekenhulp, een formulier, een overzicht uit een vaste bron, een app voor één persoon
+  zonder inloggen. Later alsnog een database erbij kan, met hulp van Stage Two.
+- **Eigen database.** Nodig bij inloggen, meerdere mensen die tegelijk werken, relaties
+  tussen gegevens, veel records. **Kost maandelijks geld** en wordt eenmalig door Stage
+  Two ingericht. Je kunt intussen gewoon bouwen: de kwaliteitspoort draait tegen een
+  eigen testdatabase.
+
+Verwacht je binnen een jaar inloggen of meerdere mensen die gegevens invoeren? Kies dan
+nu al een eigen database; dat scheelt een verhuizing.
 
 ## Wat er daarna gebeurt
 
-Stage Two zet de omgeving op: een nieuwe repo als kopie van de openbare stack-template
-(github.com/Stage-Two-AI/stack-template), de juiste databasestand (eigen of gedeeld),
-hosting, foutbewaking, de kwaliteitspoort, de afspraken en de Stage Two-plugin voor
-Claude Code. Dat duurt kort. Je krijgt een repo terug die al goed staat, met dezelfde
-werkwijze als deze, zodat je er meteen in kunt.
+`/stack:nieuwe-app` maakt de repo aan als kopie van de openbare template
+(github.com/Stage-Two-AI/stack-template), vult de naam in, zet de databasestand, zet de
+eerste versie op GitHub en beschermt de hoofdtak. De hosting (Vercel) en een eigen
+database (Supabase) koppelt Stage Two: daarvoor is toegang nodig die bewust niet op een
+werkcomputer staat. Laat Stage Two dus weten dat de app bestaat, met naam en link.
 
-Begin dus **niet** alvast zelf met bouwen in een losse map: dat werk kan niet
-overgezet worden naar de nieuwe omgeving zonder alles opnieuw te doen.
+Begin **niet** alvast zelf met bouwen in een losse map zonder deze route: dat werk kan
+niet overgezet worden naar de nieuwe app zonder alles opnieuw te doen.

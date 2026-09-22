@@ -130,7 +130,8 @@ je begint en loop de stappen in volgorde af, in plaats van te improviseren:
 - `docs/routes/verder-werken.md`: iets toevoegen, wijzigen of repareren aan deze app.
   Dit is de route voor vrijwel elk verzoek, ook een kleinigheid.
 - `docs/routes/databasewijziging.md`: een tabel, kolom of policy erbij of anders
-- `docs/routes/nieuwe-app-aanvragen.md`: een compleet nieuwe applicatie
+- `docs/routes/nieuwe-app-aanvragen.md`: een compleet nieuwe applicatie beginnen (een
+  eigen repo, via `/stack:nieuwe-app`; niet vanuit deze map)
 - `docs/routes/lokaal-kijken.md`: de app op je eigen computer zien terwijl je bouwt,
   inclusief wat daarvoor geïnstalleerd moet zijn en welke database je gebruikt
 

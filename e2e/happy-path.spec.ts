@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
+import { databaseModus } from "./stack-config";
 import { TEST_USER } from "./test-user";
+
+// Zonder database is er niets om in te loggen; dan geldt e2e/start.spec.ts.
+test.skip(databaseModus() === "geen", "deze app heeft geen database; zie e2e/start.spec.ts");
 
 /**
  * De happy path: de route door de app waarop niets misgaat.

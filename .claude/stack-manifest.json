@@ -21,7 +21,7 @@
     "nieuwer formaat in plaats van half werk te doen."
   ],
   "manifestFormaat": 1,
-  "stackVersion": 9,
+  "stackVersion": 10,
   "vanDeTemplate": {
     "vervangen": [
       ".claude/hooks/guard.mjs",

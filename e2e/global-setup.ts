@@ -1,5 +1,5 @@
-import { readFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
+import { databaseModus } from "./stack-config";
 import { TEST_USER } from "./test-user";
 
 /**
@@ -9,13 +9,7 @@ import { TEST_USER } from "./test-user";
  * we daar niets aanmaken.
  */
 function heeftEigenGebruikers(): boolean {
-  try {
-    const config: unknown = JSON.parse(readFileSync("stack.config.json", "utf8"));
-    const database = (config as { database?: unknown }).database;
-    return database !== false && database !== "gedeeld";
-  } catch {
-    return true;
-  }
+  return databaseModus() === "eigen";
 }
 
 /**
