@@ -87,9 +87,9 @@ haast hebt.
 
 - **Een wijziging aan deze app**: gewoon vragen; de route staat in
   `docs/routes/verder-werken.md`.
-- **Een compleet nieuwe app**: vraag je assistent om de aanvraag met je uit te werken
-  langs `docs/routes/nieuwe-app-aanvragen.md`, dan komt hij bij Stage Two terecht. Een
-  nieuwe app krijgt een eigen werkplaats, dus die kun je niet vanuit deze map beginnen.
+- **Een compleet nieuwe app**: typ `/stack:nieuwe-app` in een lege map; de route staat in
+  `docs/routes/nieuwe-app-aanvragen.md`. Een nieuwe app krijgt een eigen werkplaats, dus
+  die kun je niet vanuit deze map beginnen.
 - **Iets aan de instellingen, toegang of een rekening**: dat regelt Stage Two.
 
 ## Voor wie het naadje van de kous wil

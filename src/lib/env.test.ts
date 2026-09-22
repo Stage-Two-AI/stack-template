@@ -14,3 +14,11 @@ describe("env", () => {
     expect(env.VITE_OMGEVING).toBeUndefined();
   });
 });
+
+describe("heeftDatabase", () => {
+  it("is waar zodra de twee Supabase-waarden er zijn", async () => {
+    // vitest.config.ts zet de Supabase-waarden; dit is de stand van de template zelf.
+    const { heeftDatabase } = await import("./env");
+    expect(heeftDatabase).toBe(true);
+  });
+});

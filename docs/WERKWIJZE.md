@@ -1,6 +1,6 @@
 # Werkwijze
 
-*Hoort bij de Stage Two-stack, versie 9. Dit bestand komt uit de gedeelde template en
+*Hoort bij de Stage Two-stack, versie 10. Dit bestand komt uit de gedeelde template en
 wordt bijgewerkt met `/stack:bijwerken`, als pull request; wijzig het niet per project.*
 
 Dit legt uit hóé er in dit project gewerkt wordt en vooral **waarom**. De korte,
@@ -151,12 +151,12 @@ RLS-guards, de typegeneratie en de deploy-workflow. Zet `database` op `true`, ma
 Supabase-project aan, zet de drie secrets, en de hele laag hieronder wordt wakker. Andersom
 kan ook, maar bedenk dat gegevens die er al in staan dan niet vanzelf meeverhuizen.
 
-**Welke stand het wordt, beslist Stage Two**, niet de app zelf. De vraag "eigen database of
-gedeeld" hangt aan twee dingen die je van binnen de repo niet kunt overzien: delen de apps
-dezelfde inlogaccounts (één Supabase-project heeft er precies één stel), en moet je gegevens
-uit beide in één opvraging kunnen combineren. Is het antwoord op allebei ja, dan is het
-dezelfde database. Anders een eigen. Volg de route `docs/routes/nieuwe-app-aanvragen.md`; die stelt de
-vraag in gewone taal.
+**Welke stand het wordt, kies je bij het beginnen van de app** (`/stack:nieuwe-app`, zie
+`docs/routes/nieuwe-app-aanvragen.md`): geen database of een eigen. De regel erachter is
+één app per verzameling gegevens: gaat het over gegevens die al in een app zitten, dan
+bouw je het in die app. De stand "gedeeld" (een aparte app op de database van een andere
+app, bijvoorbeeld een portaal voor mensen van buiten) is een keuze van Stage Two, omdat
+die een eigen beveiligingsopzet vraagt.
 
 ### De testdatabase: preview en lokaal kijken raken nooit productie
 

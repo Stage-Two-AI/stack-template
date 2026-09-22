@@ -1,20 +1,11 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import { LoginPage } from "@/features/auth/login-page";
-import { useSession } from "@/features/auth/use-session";
-import { ItemsPage } from "@/features/items/items-page";
-import { env } from "@/lib/env";
+import { lazy, Suspense } from "react";
+import { StartPage } from "@/features/start/start-page";
+import { env, heeftDatabase } from "@/lib/env";
+
+// Alleen laden als er een database is: dit bestand importeert de Supabase-client.
+const AppMetDatabase = lazy(() => import("@/features/auth/app-met-database"));
 
 export function App() {
-  const { session, loading } = useSession();
-
-  if (loading) {
-    return (
-      <p className="p-6 text-sm text-muted-foreground" role="status">
-        Bezig met laden…
-      </p>
-    );
-  }
-
   return (
     <>
       {env.VITE_OMGEVING === "test" && (
@@ -22,14 +13,19 @@ export function App() {
           Testomgeving: dit is de testdatabase, niet de echte app.
         </p>
       )}
-      <Routes>
-        <Route path="/login" element={session ? <Navigate to="/" replace /> : <LoginPage />} />
-        <Route
-          path="/"
-          element={session ? <ItemsPage session={session} /> : <Navigate to="/login" replace />}
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      {heeftDatabase ? (
+        <Suspense
+          fallback={
+            <p className="p-6 text-sm text-muted-foreground" role="status">
+              Bezig met laden…
+            </p>
+          }
+        >
+          <AppMetDatabase />
+        </Suspense>
+      ) : (
+        <StartPage />
+      )}
     </>
   );
 }
