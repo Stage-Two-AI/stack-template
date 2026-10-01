@@ -1,7 +1,7 @@
 {
   "$beschrijving": [
     "Keuzes die per app verschillen en waar de kwaliteitspoort naar luistert.",
-    "Dit bestand is van het project: /stack:bijwerken raakt het nooit aan.",
+    "Dit bestand is van het project: /stack:updaten raakt het nooit aan.",
     "",
     "database: hoe komt deze app aan haar gegevens? Drie standen:",
     "",
@@ -28,10 +28,13 @@
     "",
     "testdatabase (optioneel, alleen bij een app met database): een tweede Supabase-project,",
     "los van productie, waar de Vercel-preview naar wijst en waar je lokaal tegenaan mag",
-    "kijken (`pnpm env:test`). Migraties gaan er bij een merge als eerste op (canary): falen",
-    "ze daar, dan blijft productie onaangeroerd. Het databasewachtwoord ervan staat als",
-    "Actions-secret SUPABASE_TEST_DB_PASSWORD. Voorbeeld:",
-    "  \"testdatabase\": { \"project_ref\": \"abcdefghijklmnopqrst\" }"
+    "kijken (de preview in de Claude-app, of `pnpm env:test`). Migraties gaan er bij een merge",
+    "als eerste op (canary): falen ze daar, dan blijft productie onaangeroerd. Het",
+    "databasewachtwoord ervan staat als Actions-secret SUPABASE_TEST_DB_PASSWORD.",
+    "anon_key is de publieke sleutel van het testproject (sb_publishable_... of de anon-JWT):",
+    "geen geheim, hij zit al in elke preview. Staat hij hier, dan werkt de preview op de",
+    "computer van de gebruiker zonder login bij Supabase. Voorbeeld:",
+    "  \"testdatabase\": { \"project_ref\": \"abcdefghijklmnopqrst\", \"anon_key\": \"sb_publishable_...\" }"
   ],
   "database": true
 }
