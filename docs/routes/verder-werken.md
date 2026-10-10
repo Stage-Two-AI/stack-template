@@ -114,5 +114,10 @@ meld dan wat er nog mist.
 | `guard:template` | je wijzigde een bestand van de gedeelde template. Draai het terug en meld het bij Stage Two; wil je de nieuwste versie van de template, dan is dat `/stack:updaten` |
 | `db:types:check` | de gegenereerde types lopen achter. `pnpm db:types` en committen |
 
+**Een regel in de PR-tekst toegevoegd** (`Geen tests nodig: ...`, `Bevestigd: ...`) terwijl
+de pull request al open staat? Een aangepaste PR-tekst start de controles niet vanzelf opnieuw,
+zodat de previewlink plakken of een vinkje zetten geen nieuwe run kost. Start de rode job
+daarna zelf opnieuw: `gh run rerun <run-id> --failed`.
+
 Een rode check omzeilen door hem uit te zetten is nooit het antwoord. De check is
 er niet om jou te hinderen, maar omdat er verder niemand meekijkt.
